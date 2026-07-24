@@ -1,7 +1,7 @@
 import json
 
 from app.clients.vllm_client import invoke_qwen_hf
-from app.graph.state import ReportState
+from app.graph.report_service.state import ReportState
 
 
 async def daily_report_node(state: ReportState) -> dict:
