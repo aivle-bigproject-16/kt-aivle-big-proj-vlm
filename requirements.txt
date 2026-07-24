@@ -1,0 +1,19 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+httpx
+
+# VLM inference
+torch
+torchvision
+accelerate
+bitsandbytes
+transformers @ git+https://github.com/huggingface/transformers
+qwen-vl-utils
+
+# LangGraph
+langgraph
+langchain-core
+
+# Storage / callback
+boto3
