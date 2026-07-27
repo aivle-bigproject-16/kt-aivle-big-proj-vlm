@@ -13,12 +13,18 @@ async def generate_daily_report(req: DailyReportRequest) -> DailyReportResponse:
         "critic_issues": None,
     }
 
-    result = await report_llm_model.ainvoke(initial_state)
-
-    return DailyReportResponse(
-        title=result["title"],
-        generated_report=result["generated_report"],
-        critic_verdict=result.get("critic_verdict"),
-        retry_count=result.get("retry_count", 0),
-        critic_issues=result.get("critic_issues"),
-    )
+    try:
+        result = await report_llm_model.ainvoke(initial_state)
+        return DailyReportResponse(
+            status="COMPLETED",
+            title=result["title"],
+            content=result["generated_report"],
+            failureReason=None,
+        )
+    except Exception as e:
+        return DailyReportResponse(
+            status="FAILED",
+            title=None,
+            content=None,
+            failureReason=str(e),
+        )

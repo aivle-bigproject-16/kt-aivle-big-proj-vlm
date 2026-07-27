@@ -7,7 +7,7 @@ router = APIRouter(prefix="/reports", tags=["reports"])
 
 
 @router.post(
-    "/daily/generate",
+    "/daily",
     response_model=DailyReportResponse,
     openapi_extra={
         "requestBody": {

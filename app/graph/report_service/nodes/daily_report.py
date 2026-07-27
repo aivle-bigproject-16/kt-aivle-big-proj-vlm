@@ -12,7 +12,6 @@ async def daily_report_node(state: ReportState) -> dict:
 
     summary = data.get("summaryData", {})
     defects_json_str = json.dumps(summary.get("defects", []), ensure_ascii=False, indent=2)
-    purchases_json_str = json.dumps(summary.get("purchases", []), ensure_ascii=False, indent=2)
     report_date = data.get("reportDate", "알 수 없음")
 
     user_msg = f"""
@@ -29,9 +28,6 @@ async def daily_report_node(state: ReportState) -> dict:
 
     [결함 유형별 발생 건수 (상세)]
     {defects_json_str}
-
-    [제조사별 결함 발생 건수 (상세)]
-    {purchases_json_str}
 
     위 데이터를 바탕으로 공장장 및 생산 관리자가 하루의 공정 상태를 파악하고 내일의 생산 전략을 세울 수 있는 '일일 품질 종합 보고서'를 작성해줘.
     단, 아래 주의 사항을 지켜줘.
@@ -59,12 +55,6 @@ async def daily_report_node(state: ReportState) -> dict:
     * **2위:** [두 번째로 많이 발생한 결함명] - [건수]건 ([전체 불량 중 차지하는 비율]% 추정)
     * ...(발생한 모든 결함에 대해 위 양식으로 반복)
     * **분석 코멘트:** [오늘 발생한 결함들의 주된 특징이나 편중에 대한 1~2줄 요약]
-
-    ### 제조사별 결함 발생 현황
-    * **1위:** [가장 많이 결함이 발생한 제조사] - [건수]건 ([전체 제조사 중 차지하는 비율]% 추정)
-    * **2위:** [두 번째로 많이 결함이 발생한 제조사] - [건수]건 ([전체 제조사 중 차지하는 비율]% 추정)
-    * ...(결함이 발생한 모든 제조사에 대해 위 양식으로 반복)
-    * **분석 코멘트:** [제조사별 불량 발생의 특징, 특정 제조사 집중 여부 등에 대한 1~2줄 요약]
 
     ### 총평 및 개선 제안 (Actionable Insights)
     > **일일 품질 총평:** [오늘 전체적인 품질 수준이 양호한지, 위험한지 종합 평가]

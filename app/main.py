@@ -17,4 +17,4 @@ app = FastAPI(
 )
 
 app.include_router(health.router)
-app.include_router(reports.router)
+app.include_router(reports.router, prefix="/vlm")

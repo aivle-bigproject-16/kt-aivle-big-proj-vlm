@@ -7,11 +7,6 @@ class DefectCountSchema(BaseModel):
     count: int
 
 
-class PurchaseCountSchema(BaseModel):
-    purchase: str
-    count: int
-
-
 class SummaryMetricsSchema(BaseModel):
     totalCount: int
     passCount: int
@@ -20,7 +15,6 @@ class SummaryMetricsSchema(BaseModel):
     prevTotalCount: int
     prevRejectCount: int
     defects: List[DefectCountSchema]
-    purchases: List[PurchaseCountSchema]
 
 
 class DailyDataSchema(BaseModel):
@@ -35,22 +29,17 @@ class DailyReportRequest(BaseModel):
 # ── Mockup ────────────────────────────────────────────────
 MOCK_DAILY_REPORT_REQUEST = DailyReportRequest(
     daily_data=DailyDataSchema(
-        reportDate="2026-07-27",
+        reportDate="2026-07-06",
         summaryData=SummaryMetricsSchema(
-            totalCount=15000,
-            passCount=14750,
-            rejectCount=240,
-            failedCount=10,
-            prevTotalCount=14500,
-            prevRejectCount=150,
+            totalCount=120,
+            passCount=104,
+            rejectCount=14,
+            failedCount=2,
+            prevTotalCount=12,
+            prevRejectCount=4,
             defects=[
-                DefectCountSchema(defectType="CRACK", count=110),
-                DefectCountSchema(defectType="SCRATCH", count=80),
-                DefectCountSchema(defectType="DENT", count=50),
-            ],
-            purchases=[
-                PurchaseCountSchema(purchase="LG", count=20),
-                PurchaseCountSchema(purchase="삼성", count=3),
+                DefectCountSchema(defectType="MICRO_DEFECT", count=5),
+                DefectCountSchema(defectType="CRACK", count=2),
             ],
         ),
     )
