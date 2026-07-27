@@ -6,11 +6,6 @@ class DefectCount(TypedDict):
     count: int
 
 
-class PurchaseCount(TypedDict):
-    purchase: str
-    count: int
-
-
 class SummaryMetrics(TypedDict):
     totalCount: int
     passCount: int
@@ -19,7 +14,6 @@ class SummaryMetrics(TypedDict):
     prevTotalCount: int
     prevRejectCount: int
     defects: List[DefectCount]
-    purchases: List[PurchaseCount]
 
 
 class DailyData(TypedDict):
@@ -32,5 +26,5 @@ class ReportState(TypedDict):
     generated_report: str
     title: str
     retry_count: int
-    critic_verdict: Optional[str]       # "PASS" | "FAIL"
-    critic_issues: Optional[List[dict]] # [{criterion, description}, ...]
+    critic_verdict: Optional[str]        # "PASS" | "FAIL"
+    critic_issues: Optional[List[dict]]  # [{criterion, description}, ...]
