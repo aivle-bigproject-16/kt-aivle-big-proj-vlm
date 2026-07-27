@@ -17,3 +17,6 @@ langchain-core
 
 # Storage / callback
 boto3
+
+# Environment
+python-dotenv
