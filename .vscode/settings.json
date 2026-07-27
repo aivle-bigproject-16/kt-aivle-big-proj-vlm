@@ -3,7 +3,8 @@
     "python.terminal.activateEnvInCurrentTerminal": true,
 
     // Windows (네이티브 PowerShell)
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    // WSL2에서 열 경우 .venv/bin/python 으로 자동 전환됨
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
     "terminal.integrated.defaultProfile.windows": "PowerShell (venv)",
     "terminal.integrated.profiles.windows": {
         "PowerShell (venv)": {

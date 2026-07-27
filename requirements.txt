@@ -3,7 +3,8 @@ uvicorn[standard]
 pydantic-settings
 httpx
 
-# VLM inference
+# VLM inference (CUDA 12.4 — RTX 40 series)
+--extra-index-url https://download.pytorch.org/whl/cu124
 torch
 torchvision
 accelerate
