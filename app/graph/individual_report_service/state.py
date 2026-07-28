@@ -2,7 +2,7 @@ from typing import TypedDict, List, Optional
 
 class DefectInfo(TypedDict):
     imageType: str
-    defectType: Optional[str]
+    defectType: List[str]
 
 class IndividualData(TypedDict):
     cellSerialNo: str
