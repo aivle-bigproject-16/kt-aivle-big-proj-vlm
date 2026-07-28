@@ -1,6 +1,6 @@
 from typing import Literal
 
-from app.graph.report_service.state import ReportState
+from app.graph.daily_report_service.state import ReportState
 
 
 def route_after_critic(state: ReportState) -> Literal["daily_node", "END"]:

@@ -12,10 +12,9 @@ async def main():
     result = await generate_daily_report(MOCK_DAILY_REPORT_REQUEST)
 
     print("\n===== 결과 =====")
+    print(f"상태: {result.status}")
     print(f"제목: {result.title}")
-    print(f"크리틱 판정: {result.critic_verdict}")
-    print(f"재시도 횟수: {result.retry_count}")
-    print(f"\n{result.generated_report}")
+    print(f"\n{result.content or result.failureReason}")
 
 
 if __name__ == "__main__":
