@@ -1,10 +1,7 @@
 import asyncio
-import logging
 import time
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-
-logger = logging.getLogger(__name__)
 
 hf_model = None
 hf_tokenizer = None
@@ -44,10 +41,10 @@ async def invoke_qwen_hf(
             **inputs, max_new_tokens=1500, temperature=0.2, do_sample=True
         )
 
-    logger.info("🔄 Qwen 추론 시작...")
+    print("🔄 Qwen 추론 시작...", flush=True)
     t0 = time.perf_counter()
     generated_ids = await asyncio.to_thread(generate)
-    logger.info("✅ Qwen 추론 완료 — %.1f초", time.perf_counter() - t0)
+    print(f"✅ Qwen 추론 완료 — {time.perf_counter() - t0:.1f}초", flush=True)
 
     generated_ids_trimmed = generated_ids[:, inputs.input_ids.shape[1]:]
     output_text = hf_tokenizer.batch_decode(
