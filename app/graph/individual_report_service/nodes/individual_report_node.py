@@ -15,13 +15,10 @@ async def individual_report_node(state: ReportState) -> dict:
     defects = data.get("defectInfo", [])
     
     defect_list = [d for d in defects if d.get("defectType") is not None]
-    
+    defects_images = len(defect_list)
+
     ct_defects = sum(len(d.get("defectType", [])) for d in defect_list if d.get("imageType", "") == "CT")
     rgb_defects = sum(len(d.get("defectType", [])) for d in defect_list if d.get("imageType", "") == "RGB")
-    total_defects = ct_defects + rgb_defects
-    
-    # 결함률 계산
-    defect_rate = round((total_defects / total_images * 100), 1) if total_images > 0 else 0.0
 
     defects_json_str = json.dumps(defects, ensure_ascii=False, indent=2)
 
@@ -30,7 +27,7 @@ async def individual_report_node(state: ReportState) -> dict:
     - Cell Serial No: {serial_no}
     - Inspection ID: {inspection_id}
     - 총 검사 이미지 수: {total_images}
-    - 결함 발견 이미지 수: {total_defects} (결함률: {defect_rate}%)
+    - 결함 발견 이미지 수: {defects_images}
     
     [이미지 타입별 통계]
     - CT: 총 {ct_defects}건
@@ -53,7 +50,7 @@ async def individual_report_node(state: ReportState) -> dict:
     * **총 검사 이미지 수:** {total_images}장
 
     ### 검사 요약 및 이미지 타입별 현황
-    * **전체 결함률:** {defect_rate}% ({total_images}장 중 {total_defects}장 결함)
+    * **전체 결함:** {total_images}장 중 {defects_images}장 결함
     * **CT 이미지:** 결함 {ct_defects}건
     * **RGB 이미지:**   결함 {rgb_defects}건
 
