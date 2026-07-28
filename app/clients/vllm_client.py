@@ -5,7 +5,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 hf_model = None
 hf_tokenizer = None
 
-MODEL_ID = "Qwen/Qwen3.5-2B-Instruct"
+MODEL_ID = "Qwen/Qwen3.5-2B"
 
 
 def load_model(model_id: str = MODEL_ID) -> None:
