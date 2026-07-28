@@ -1,7 +1,7 @@
 import asyncio
 from app.clients.vllm_client import load_model
 from app.schemas.request import MOCK_DAILY_REPORT_REQUEST
-from app.services.report_service import generate_daily_report
+from app.services.daily_report_service import generate_daily_report
 
 
 async def main():
