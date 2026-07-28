@@ -1,6 +1,6 @@
 from app.schemas.request import DailyReportRequest
 from app.schemas.response import DailyReportResponse
-from app.graph.report_service.graph_builder import report_llm_model
+from app.graph.daily_report_service.graph_builder import report_llm_model
 
 
 async def generate_daily_report(req: DailyReportRequest) -> DailyReportResponse:
