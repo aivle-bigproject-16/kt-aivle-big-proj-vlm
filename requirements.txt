@@ -10,7 +10,6 @@ torchvision
 accelerate
 bitsandbytes
 transformers @ git+https://github.com/huggingface/transformers
-qwen-vl-utils
 
 # LangGraph
 langgraph
