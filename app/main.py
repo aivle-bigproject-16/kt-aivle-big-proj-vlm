@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.clients.vllm_client import load_model
-from app.api.routes import reports, health
+from app.api.routes import reports, individual_reports, health
 
 
 @asynccontextmanager
@@ -18,3 +18,4 @@ app = FastAPI(
 
 app.include_router(health.router)
 app.include_router(reports.router, prefix="/vlm")
+app.include_router(individual_reports.router, prefix="/vlm")
