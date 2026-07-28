@@ -1,6 +1,8 @@
 import json
-from app.graph.individual_report_service.state import ReportState
+
 from app.clients.vllm_client import invoke_qwen_hf
+from app.graph.individual_report_service.state import ReportState
+
 
 async def individual_report_node(state: ReportState) -> dict:
     data = state.get("individual_data") or {}
@@ -13,12 +15,20 @@ async def individual_report_node(state: ReportState) -> dict:
     inspection_id = data.get("inspectionId", 0)
     total_images = data.get("totalImages", 0)
     defects = data.get("defectInfo", [])
-    
+
     defect_list = [d for d in defects if d.get("defectType") is not None]
     defects_images = len(defect_list)
 
-    ct_defects = sum(len(d.get("defectType", [])) for d in defect_list if d.get("imageType", "") == "CT")
-    rgb_defects = sum(len(d.get("defectType", [])) for d in defect_list if d.get("imageType", "") == "RGB")
+    ct_defects = sum(
+        len(d.get("defectType", []))
+        for d in defect_list
+        if d.get("imageType", "") == "CT"
+    )
+    rgb_defects = sum(
+        len(d.get("defectType", []))
+        for d in defect_list
+        if d.get("imageType", "") == "RGB"
+    )
 
     defects_json_str = json.dumps(defects, ensure_ascii=False, indent=2)
 
@@ -28,7 +38,7 @@ async def individual_report_node(state: ReportState) -> dict:
     - Inspection ID: {inspection_id}
     - 총 검사 이미지 수: {total_images}
     - 결함 발견 이미지 수: {defects_images}
-    
+
     [이미지 타입별 통계]
     - CT: 총 {ct_defects}건
     - RGB: 총 {rgb_defects}건
@@ -57,7 +67,7 @@ async def individual_report_node(state: ReportState) -> dict:
     ### 주요 결함 유형 분석
     * **[결함타입명]:** [발생 건수]건
     * **[결함타입명]:** [발생 건수]건
-    * **분석 코멘트:** [현재 셀의 불량 양상에 대한 짧은 요약. 양품일 경우 '특이사항 없음'으로 기재]
+    * **분석 코멘트:** [현재 셀의 불량 양상에 대한 짧은 요약.]
     """
 
     if critic_issues:
