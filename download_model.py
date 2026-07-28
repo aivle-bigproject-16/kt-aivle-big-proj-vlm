@@ -5,7 +5,7 @@ import sys
 import torch
 from dotenv import load_dotenv
 from huggingface_hub import get_token, login
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 load_dotenv()
 
@@ -32,18 +32,10 @@ def download_model():
     print(f"\n📦 모델 다운로드 시작: {MODEL_ID}")
     print("   (첫 실행 시 수 GB 다운로드 — 시간이 걸릴 수 있습니다)\n")
 
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.bfloat16,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-    )
-
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID,
         torch_dtype=torch.bfloat16,
         device_map="auto",
-        quantization_config=quantization_config,
     )
     print("✅ 모델 로드 완료")
 

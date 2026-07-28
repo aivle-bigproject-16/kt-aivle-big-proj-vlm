@@ -1,6 +1,6 @@
 import asyncio
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 hf_model = None
 hf_tokenizer = None
@@ -11,18 +11,10 @@ MODEL_ID = "Qwen/Qwen3.5-2B"
 def load_model(model_id: str = MODEL_ID) -> None:
     global hf_model, hf_tokenizer
 
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.bfloat16,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-    )
-
     hf_model = AutoModelForCausalLM.from_pretrained(
         model_id,
         torch_dtype=torch.bfloat16,
         device_map="auto",
-        quantization_config=quantization_config,
     )
     hf_tokenizer = AutoTokenizer.from_pretrained(model_id)
     print(f"✅ {model_id} 로드 완료")
