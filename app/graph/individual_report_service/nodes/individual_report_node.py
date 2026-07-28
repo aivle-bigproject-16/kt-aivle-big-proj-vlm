@@ -15,9 +15,10 @@ async def individual_report_node(state: ReportState) -> dict:
     defects = data.get("defectInfo", [])
     
     defect_list = [d for d in defects if d.get("defectType") is not None]
-    total_defects = len(defect_list)
-    ct_defects = len([d for d in defect_list if d.get("imageType") == "CT"])
-    rgb_defects = len([d for d in defect_list if d.get("imageType") == "RGB"])
+    
+    ct_defects = sum(len(d.get("defectType", [])) for d in defect_list if d.get("imageType", "") == "CT")
+    rgb_defects = sum(len(d.get("defectType", [])) for d in defect_list if d.get("imageType", "") == "RGB")
+    total_defects = ct_defects + rgb_defects
     
     # 결함률 계산
     defect_rate = round((total_defects / total_images * 100), 1) if total_images > 0 else 0.0
