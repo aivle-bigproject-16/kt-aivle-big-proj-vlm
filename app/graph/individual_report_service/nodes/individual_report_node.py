@@ -7,6 +7,7 @@ from app.graph.individual_report_service.state import ReportState
 async def individual_report_node(state: ReportState) -> dict:
     data = state.get("individual_data") or {}
     critic_issues = state.get("critic_issues") or []
+    severity = state.get("severity",0.0)
 
     system_msg = "당신은 배터리 셀 품질 검사 데이터를 분석하는 종합 통계 분석가입니다."
 
@@ -16,7 +17,7 @@ async def individual_report_node(state: ReportState) -> dict:
     total_images = data.get("totalImages", 0)
     defects = data.get("defectInfo", [])
 
-    #cellSize = data.get("cellSize",{})
+    #cellSize = data.get("cellSize",{}) -> 따로 노드 추가
     #pointGroups = data.get("pointGroups",[])
     #공극체전률 계산
     #심각도 계산
