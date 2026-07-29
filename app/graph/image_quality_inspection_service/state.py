@@ -1,6 +1,11 @@
 from typing import TypedDict, List, Optional
 
+class Images(TypedDict):
+    imageId: str
+    imageUrl: str
+
 class QualityState(TypedDict):
-    image_type: Optional[str]
-    image_urls: List[str]
+    imageType: Optional[str]
+    images: List[Images]
+
     inspection_result: Optional[dict[str]]

@@ -4,15 +4,21 @@ from app.clients.vllm_client import invoke_qwen_hf
 from app.graph.image_quality_inspection_service.state import QualityState
 
 async def image_quality_inspection_node(state: QualityState):
-    image_urls = state.get("image_urls", [])
-    image_type = state.get("image_type","")
+    images = state.get("images", [])
+    image_type = state.get("imageType","")
+    
+    image_urls = [img["imagUrl"] for img in images]
+    image_info_str = "\n".join([f"이미지 {i+1} - ID: {img['imageId']}" for i, img in enumerate(images)])
 
     if image_type == "CT":
       system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
       
-      user_msg = """
+      user_msg = f"""
       제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다. 
       영상을 분석하여 어떤 촬영 장비 및 설정 오류로 인한 화질 불량인지 판별하세요.
+
+      [입력된 이미지 정보]
+      {image_info_str}
 
       [판별 기준: CT 촬영 실패 케이스]
       * ct_positioning_failure: 배터리 일부 잘림, 필요한 내부 영역 미촬영.
@@ -26,17 +32,20 @@ async def image_quality_inspection_node(state: QualityState):
       * NONE: 위 결함이 없는 정상적인 CT 영상
 
       [출력 JSON 형식]
-      {
-        "error_types": ["판별 기준에 명시된 실패 케이스 ID (배열 형태)"],
-        "description": "발견된 현상에 대한 시각적 근거 요약"
-      }
+      [
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+      ]
       """
     else:
       system_msg = "당신은 배터리 외관 표면 RGB 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
       
-      user_msg = """
+      user_msg = f"""
       제공된 이미지는 배터리 셀의 외부 표면을 촬영한 RGB 영상입니다. 
       영상을 분석하여 어떤 물리적 환경 및 설정 오류로 인한 화질 불량인지 판별하세요.
+
+      [입력된 이미지 정보]
+      {image_info_str}
 
       [판별 기준: RGB 촬영 실패 케이스]
       * rgb_trigger_timing_failure: 배터리 앞부분 또는 뒷부분이 잘린 이미지.
@@ -51,10 +60,10 @@ async def image_quality_inspection_node(state: QualityState):
       * NONE: 위 결함이 없는 정상적인 RGB 영상
 
       [출력 JSON 형식]
-      {
-        "error_types": ["판별 기준에 명시된 실패 케이스 ID (배열 형태)"],
-        "description": "발견된 현상에 대한 시각적 근거 요약"
-      }
+      [
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+      ]
       """
 
     response_text = await invoke_qwen_hf(system_msg, user_msg, image_urls)
