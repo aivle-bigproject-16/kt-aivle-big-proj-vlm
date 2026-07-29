@@ -16,6 +16,11 @@ async def individual_report_node(state: ReportState) -> dict:
     total_images = data.get("totalImages", 0)
     defects = data.get("defectInfo", [])
 
+    #cellSize = data.get("cellSize",{})
+    #pointGroups = data.get("pointGroups",[])
+    #공극체전률 계산
+    #심각도 계산
+
     defect_list = [d for d in defects if d.get("defectType") is not None]
     defects_images = len(defect_list)
 
