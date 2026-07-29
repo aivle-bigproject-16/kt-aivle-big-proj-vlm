@@ -6,18 +6,37 @@ from app.graph.image_quality_inspection_service.state import QualityState
 async def image_quality_inspection_node(state: QualityState):
     images = state.get("images", [])
     image_type = state.get("imageType","")
-    
-    image_urls = [img["imagUrl"] for img in images]
-    image_info_str = "\n".join([f"이미지 {i+1} - ID: {img['imageId']}" for i, img in enumerate(images)])
+    reference_cases = state.get("reference_cases", [])
+
+    image_urls = []
+    # 실제 분석할 타겟 이미지 추가
+    image_info_str = "[분석 대상 이미지]\n"
+    for i, img in enumerate(images):
+        image_urls.append(img["imageUrl"])
+        image_info_str += f"이미지 {i + 1} - ID: {img['imageId']}\n"
+
+    ref_info_str = ""
+    ref_images = []
+    if reference_cases:
+      ref_info_str = "[참고용 과거 불량 유사 사례 (Few-Shot Examples)]\n"
+      for i, ref in enumerate(reference_cases):
+        ref_images.append(ref["ref_imageUrl"])
+        ref_info_str += f"분석 대상 이미지 {i + 1} 참조용 이미지 {len(reference_cases) + i + 1}:\n"
+        ref_info_str += f"- 판정된 불량 유형: {ref['ref_failType']}\n"
+        ref_info_str += f"- 설명: {ref['ref_description']}\n\n"
+
+    all_image_urls = ref_images + image_urls
 
     if image_type == "CT":
       system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
       
       user_msg = f"""
-      제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다. 
-      영상을 분석하여 어떤 촬영 장비 및 설정 오류로 인한 화질 불량인지 판별하세요.
+      제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다.
+      당신에게 두 그룹의 이미지가 순서대로 제공됩니다.
+      먼저 제공되는 이미지는 과거의 불량 사례(참조용)이며, 마지막에 제공되는 이미지들이 실제로 판별해야 할 '분석 대상 이미지'입니다.
+      분석 대상 이미지를 분석하여 어떤 촬영 장비 및 설정 오류들로 인한 화질 불량인지 판별하세요.
 
-      [입력된 이미지 정보]
+      {ref_info_str}
       {image_info_str}
 
       [판별 기준: CT 촬영 실패 케이스]
@@ -29,12 +48,11 @@ async def image_quality_inspection_node(state: QualityState):
       * ct_low_resolution: 작은 이물질, 미세 기공, 얇은 분리막 손실 또는 합쳐짐.
       * ct_sparse_projection_aliasing: 물체 주위 방사형 줄무늬 및 aliasing.
       * ct_photon_starvation: 금속 주변 심한 검은 영역과 국소 streak.
-      * NONE: 위 결함이 없는 정상적인 CT 영상
 
       [출력 JSON 형식]
       [
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID들", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID들", "description":"발견된 현상에 대한 시각적 근거 요약"}}
       ]
       """
     else:
@@ -42,9 +60,10 @@ async def image_quality_inspection_node(state: QualityState):
       
       user_msg = f"""
       제공된 이미지는 배터리 셀의 외부 표면을 촬영한 RGB 영상입니다. 
-      영상을 분석하여 어떤 물리적 환경 및 설정 오류로 인한 화질 불량인지 판별하세요.
+      먼저 제공되는 이미지는 과거의 불량 사례(참조용)이며, 마지막에 제공되는 이미지들이 실제로 판별해야 할 '분석 대상 이미지'입니다.
+      분석 대상 이미지를 분석하여 어떤 물리적 환경 및 설정 오류들로 인한 화질 불량인지 판별하세요.
 
-      [입력된 이미지 정보]
+      {ref_info_str}
       {image_info_str}
 
       [판별 기준: RGB 촬영 실패 케이스]
@@ -57,15 +76,14 @@ async def image_quality_inspection_node(state: QualityState):
       * rgb_overexposure: 밝은 부분 포화, 결함 정보 소실.
       * rgb_surface_dust: 표면에 작은 점, 얼룩, 입자 오염.
       * rgb_hair_contamination: 길고 얇은 검정 또는 갈색 곡선이 표면을 가림.
-      * NONE: 위 결함이 없는 정상적인 RGB 영상
 
       [출력 JSON 형식]
       [
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID들", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID들", "description":"발견된 현상에 대한 시각적 근거 요약"}}
       ]
       """
 
-    response_text = await invoke_qwen_hf(system_msg, user_msg, image_urls)
+    response_text = await invoke_qwen_hf(system_msg, user_msg,all_image_urls)
 
     return {"inspection_result": response_text}
