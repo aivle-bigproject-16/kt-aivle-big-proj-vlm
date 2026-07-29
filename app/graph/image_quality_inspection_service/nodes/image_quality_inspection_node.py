@@ -6,38 +6,47 @@ from app.graph.image_quality_inspection_service.state import QualityState
 async def image_quality_inspection_node(state: QualityState):
     images = state.get("images", [])
     image_type = state.get("imageType","")
+    
     reference_cases = state.get("reference_cases", [])
+    ref_dict = {ref["target_imageId"]: ref for ref in reference_cases}
 
-    image_urls = []
-    # 실제 분석할 타겟 이미지 추가
-    image_info_str = "[분석 대상 이미지]\n"
-    for i, img in enumerate(images):
-        image_urls.append(img["imageUrl"])
-        image_info_str += f"이미지 {i + 1} - ID: {img['imageId']}\n"
+    all_image_urls = []
+    context_parts = []
 
-    ref_info_str = ""
-    ref_images = []
-    if reference_cases:
-      ref_info_str = "[참고용 과거 불량 유사 사례 (Few-Shot Examples)]\n"
-      for i, ref in enumerate(reference_cases):
-        ref_images.append(ref["ref_imageUrl"])
-        ref_info_str += f"분석 대상 이미지 {i + 1} 참조용 이미지 {len(reference_cases) + i + 1}:\n"
-        ref_info_str += f"- 판정된 불량 유형: {ref['ref_failType']}\n"
-        ref_info_str += f"- 설명: {ref['ref_description']}\n\n"
-
-    all_image_urls = ref_images + image_urls
+    for img in images:
+        target_id = img["imageId"]
+        ref = ref_dict.get(target_id) 
+        context_parts.append(f"\n--- 분석 대상 ID: {target_id} ---")
+        
+        if ref:
+            all_image_urls.append(ref["ref_imageUrl"])
+            ref_idx = len(all_image_urls)
+            
+            all_image_urls.append(img["imageUrl"])
+            target_idx = len(all_image_urls)
+            
+            context_parts.append(
+                f"* 이미지 {ref_idx} (과거 불량 사례): 판정 유형 [{ref['ref_failType']}]\n"
+                f"* 이미지 {target_idx} (실제 분석 대상): 이미지 {ref_idx}를 참고하여 이 이미지의 불량 여부를 판독하세요."
+            )
+        else:
+            all_image_urls.append(img["imageUrl"])
+            target_idx = len(all_image_urls)
+            context_parts.append(
+                f"* 이미지 {target_idx} (실제 분석 대상): 과거 참고 사례가 없습니다. 독립적으로 판독하세요."
+            )
+    context = "\n".join(context_parts)
 
     if image_type == "CT":
       system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
       
       user_msg = f"""
       제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다.
-      당신에게 두 그룹의 이미지가 순서대로 제공됩니다.
-      먼저 제공되는 이미지는 과거의 불량 사례(참조용)이며, 마지막에 제공되는 이미지들이 실제로 판별해야 할 '분석 대상 이미지'입니다.
+      당신에게 두 그룹(과거 불량 사례, 분석 대상 이미지)의 이미지가 번갈아서 제공됩니다.
       분석 대상 이미지를 분석하여 어떤 촬영 장비 및 설정 오류들로 인한 화질 불량인지 판별하세요.
-
-      {ref_info_str}
-      {image_info_str}
+      
+      [분석 세트 안내]
+      {context}
 
       [판별 기준: CT 촬영 실패 케이스]
       * ct_positioning_failure: 배터리 일부 잘림, 필요한 내부 영역 미촬영.
@@ -60,11 +69,11 @@ async def image_quality_inspection_node(state: QualityState):
       
       user_msg = f"""
       제공된 이미지는 배터리 셀의 외부 표면을 촬영한 RGB 영상입니다. 
-      먼저 제공되는 이미지는 과거의 불량 사례(참조용)이며, 마지막에 제공되는 이미지들이 실제로 판별해야 할 '분석 대상 이미지'입니다.
+      당신에게 두 그룹(과거 불량 사례, 분석 대상 이미지)의 이미지가 번갈아서 제공됩니다.
       분석 대상 이미지를 분석하여 어떤 물리적 환경 및 설정 오류들로 인한 화질 불량인지 판별하세요.
 
-      {ref_info_str}
-      {image_info_str}
+      [분석 세트 안내]
+      {context}
 
       [판별 기준: RGB 촬영 실패 케이스]
       * rgb_trigger_timing_failure: 배터리 앞부분 또는 뒷부분이 잘린 이미지.
