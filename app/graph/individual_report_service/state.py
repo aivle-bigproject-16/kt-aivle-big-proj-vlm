@@ -10,13 +10,14 @@ class IndividualData(TypedDict):
     totalImages: int
     cellSize: Set[float]
     pointGroups:List[Set[float]]
+    ctVoidRatio: float
+    rgbDefectRate: float
     defectInfo: List[DefectInfo]
 
 class ReportState(TypedDict):
     individual_data: Optional[IndividualData]
     generated_report: str
-    title: str
-    severity: float                      
+    title: str                 
     retry_count: int
     critic_verdict: Optional[str]        # "PASS" | "FAIL"
     critic_issues: Optional[List[dict]]  # [{criterion, description}, ...]
