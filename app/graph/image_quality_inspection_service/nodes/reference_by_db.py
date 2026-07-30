@@ -4,11 +4,10 @@ from app.graph.image_quality_inspection_service.db_setup import collection, extr
 def search_similar_defects(target_image_path: str, top_k: int = 1) -> dict:
     target_embedding = extract_embedding(target_image_path)
     
-    # include 파라미터에 "uris"를 명시해야 결과 딕셔너리에 uris 정보가 담깁니다.
     result = collection.query(
         query_embeddings=[target_embedding],
         n_results=top_k,
-        include=["metadatas", "uris"]
+        include=["metadatas"]
     )
     
     return result
