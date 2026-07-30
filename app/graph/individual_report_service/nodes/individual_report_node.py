@@ -16,10 +16,10 @@ async def individual_report_node(state: ReportState) -> dict:
     total_images = data.get("totalImages", 0)
     defects = data.get("defectInfo", [])
 
-    #cellSize = data.get("cellSize",{})
-    #pointGroups = data.get("pointGroups",[])
-    #공극체전률(CT) + 표면 불량면적 결합률(RGB)
-    #위 3개로 한, 두 줄 간단 정리(위치 유형 분석 등등)
+    cellSize = data.get("cellSize",{})
+    pointGroups = data.get("pointGroups",[])
+    ctVoidRatio = data.get("ctVoidRatio",0.0)
+    rgbDefectRate = data.get("rgbDefectRate",0.0)
 
     defect_list = [d for d in defects if d.get("defectType") is not None]
     defects_images = len(defect_list)
@@ -44,6 +44,12 @@ async def individual_report_node(state: ReportState) -> dict:
     - 총 검사 이미지 수: {total_images}
     - 결함 발견 이미지 수: {defects_images}
 
+    [결함의 위치적 데이터]
+    - 셀 사이즈: {cellSize}
+    - CT 점군 좌표 리스트: {pointGroups}
+    - 공극체적률: {ctVoidRatio}
+    - 표면 불량면적 결합률: {rgbDefectRate}
+
     [이미지 타입별 통계]
     - CT: 총 {ct_defects}건
     - RGB: 총 {rgb_defects}건
@@ -63,6 +69,9 @@ async def individual_report_node(state: ReportState) -> dict:
     * **Cell Serial No:** {serial_no}
     * **Inspection ID:** {inspection_id}
     * **총 검사 이미지 수:** {total_images}장
+
+    ### 결함의 위치적 특성
+    * **분석 코멘트:** [결함의 위치적 데이터를 사용해 결함의 위치적 특성(군집형/분산형, 특정 좌표계 편중 여부)과 내·외부 결함의 연관성 1~2줄로 핵심만 간단히 요약]
 
     ### 검사 요약 및 이미지 타입별 현황
     * **전체 결함:** {total_images}장 중 {defects_images}장 결함
