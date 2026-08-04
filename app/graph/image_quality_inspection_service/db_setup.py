@@ -38,6 +38,16 @@ def setup_initial_database():
             "id": "ref_scratch_001",
             "path": "/app/data/defects/scratch_01.jpg",
             "metadata": {
+                "image_type": "RGB",
+                "failType": "SCRATCH", 
+                "url": "s3://my-bucket/defects/scratch_01.jpg"
+            }
+        },
+        {
+            "id": "ref_scratch_001",
+            "path": "/app/data/defects/scratch_01.jpg",
+            "metadata": {
+                "image_type": "CT",
                 "failType": "SCRATCH", 
                 "url": "s3://my-bucket/defects/scratch_01.jpg"
             }
