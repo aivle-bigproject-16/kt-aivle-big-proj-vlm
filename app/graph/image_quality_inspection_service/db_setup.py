@@ -1,6 +1,8 @@
 import os
 import chromadb
 import torch
+import requests
+from io import BytesIO
 from transformers import CLIPProcessor, CLIPModel
 from PIL import Image
 
@@ -12,7 +14,12 @@ embedding_model = CLIPModel.from_pretrained(model_id)
 embedding_model.eval()
 
 def extract_embedding(image_path: str) -> list:
-    image = Image.open(image_path).convert('RGB')
+    if image_path.startswith("http://") or image_path.startswith("https://"):
+        response = requests.get(image_path)
+        response.raise_for_status()
+        image = Image.open(BytesIO(response.content)).convert('RGB')
+    else:
+        image = Image.open(image_path).convert('RGB')
     inputs = processor(images=image, return_tensors="pt")
     
     with torch.no_grad():
@@ -32,7 +39,7 @@ collection = client.get_or_create_collection(
 )
 
 # 최초 1회 실행 파트
-def setup_initial_database():
+def setup_initial_database(): # 실제 서비스 시 url 변경!
     initial_defect_data = [
         {
             "id": "rgb_focus_failure",
@@ -40,7 +47,7 @@ def setup_initial_database():
             "metadata": {
                 "image_type": "RGB",
                 "failType": "rgb_focus_failure", 
-                "url": ""
+                "url": "/app/data/rgb_focus_failure.jpg"
             }
         },
         {
@@ -49,7 +56,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_hair_contamination", 
-            "url": ""
+            "url": "/app/data/rgb_hair_contamination.jpg"
             }
         },
         {
@@ -58,7 +65,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_NONE", 
-            "url": ""
+            "url": "/app/data/rgb_NONE.jpg"
             }
         },
         {
@@ -67,7 +74,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_overexposure", 
-            "url": ""
+            "url": "/app/data/rgb_overexposure.jpg"
             }
         },
         {
@@ -76,7 +83,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_reflection_glare", 
-            "url": ""
+            "url": "/app/data/rgb_reflection_glare.jpg"
             }
         },
         {
@@ -85,7 +92,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_surface_dust", 
-            "url": ""
+            "url": "/app/data/rgb_surface_dust.jpg"
             }
         },
         {
@@ -94,7 +101,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_trigger_timing_failure", 
-            "url": ""
+            "url": "/app/data/rgb_trigger_timing_failure.jpg"
             }
         },
         {
@@ -103,7 +110,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_underexposure", 
-            "url": ""
+            "url": "/app/data/rgb_underexposure.jpg"
             }
         },
         {
@@ -112,7 +119,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_uneven_lighting", 
-            "url": ""
+            "url": "/app/data/rgb_uneven_lighting.jpg"
             }
         },
         {
@@ -121,7 +128,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "CT",
             "failType": "ct_cell_alignment_failure", 
-            "url": ""
+            "url": "/app/data/ct_cell_alignment_failure.jpg"
             }
         },
         {
@@ -130,7 +137,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "CT",
             "failType": "ct_acquisition_motion", 
-            "url": ""
+            "url": "/app/data/ct_acquisition_motion.jpg"
             }
         },
         {
@@ -139,7 +146,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "CT",
             "failType": "ct_insufficient_projection_sampling", 
-            "url": ""
+            "url": "/app/data/ct_insufficient_projection_sampling.jpg"
             }
         },
         {
@@ -148,7 +155,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "CT",
             "failType": "ct_low_signal_noise", 
-            "url": ""
+            "url": "/app/data/ct_low_signal_noise.jpg"
             }
         },
         {
@@ -157,7 +164,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "CT",
             "failType": "ct_beam_hardening_metal_streak", 
-            "url": ""
+            "url": "/app/data/ct_beam_hardening_metal_streak.jpg"
             }
         },
         {
@@ -166,7 +173,7 @@ def setup_initial_database():
             "metadata": {
             "image_type": "CT",
             "failType": "ct_NONE", 
-            "url": ""
+            "url": "/app/data/ct_NONE.jpg"
             }
         },
     ]
