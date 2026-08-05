@@ -49,15 +49,12 @@ async def image_quality_inspection_node(state: QualityState):
       {context}
 
       [판별 기준: CT 촬영 실패 케이스]
-      * ct_positioning_failure: 배터리 일부 잘림, 필요한 내부 영역 미촬영.
-      * ct_fixation_motion: 경계 번짐, 구조가 이중으로 보이는 모션 아티팩트.
-      * ct_detector_calibration: 동심원 ring 또는 줄무늬, 불량 픽셀 band 발생.
-      * ct_low_xray_output: 전체 어두움, 강한 noise, 긴 금속 streak.
-      * ct_high_xray_output: 재질 간 명암차 감소, 결함 경계 흐림.
-      * ct_low_resolution: 작은 이물질, 미세 기공, 얇은 분리막 손실 또는 합쳐짐.
-      * ct_sparse_projection_aliasing: 물체 주위 방사형 줄무늬 및 aliasing.
-      * ct_photon_starvation: 금속 주변 심한 검은 영역과 국소 streak.
-      * NONE: 위 결함이 없는 정상적인 CT 영상.
+      * ct_cell_alignment_failure: 배터리 일부가 촬영 영역 밖으로 벗어나 외곽과 내부 구조 일부가 잘림.
+      * ct_acquisition_motion: 구조 경계의 방향성 흐림, 동일 구조가 이동 방향으로 이중으로 보이는 ghosting.
+      * ct_insufficient_projection_sampling: 구조 주변 streak, 방향성 aliasing, 경계·세부 구조의 재구성 손실.
+      * ct_low_signal_noise: 전체 신호 감소, 입자성 Poisson noise 증가, 대비와 미세 구조 식별력 저하.
+      * ct_beam_hardening_metal_streak: 고밀도 영역 주변 cupping·명암 왜곡과 방사형 밝고 어두운 streak.
+      * ct_NONE: 위 결함이 없는 정상적인 CT 영상.
 
       [출력 JSON 형식]
       [
@@ -78,7 +75,6 @@ async def image_quality_inspection_node(state: QualityState):
 
       [판별 기준: RGB 촬영 실패 케이스]
       * rgb_trigger_timing_failure: 배터리 앞부분 또는 뒷부분이 잘린 이미지.
-      * rgb_alignment_failure: 한쪽으로 치우치거나 회전된 배터리.
       * rgb_uneven_lighting: 한쪽은 밝고 다른 쪽은 어두운 불균일한 이미지.
       * rgb_reflection_glare: 흰 반사광이 표면 scratch 및 오염 부위를 덮음.
       * rgb_focus_failure: 경계 흐림, 작은 scratch 미식별.
@@ -86,7 +82,7 @@ async def image_quality_inspection_node(state: QualityState):
       * rgb_overexposure: 밝은 부분 포화, 결함 정보 소실.
       * rgb_surface_dust: 표면에 작은 점, 얼룩, 입자 오염.
       * rgb_hair_contamination: 길고 얇은 검정 또는 갈색 곡선이 표면을 가림.
-      * NONE: 위 결함이 없는 정상적인 CT 영상.
+      * rgb_NONE: 위 결함이 없는 정상적인 RGB 영상.
 
       [출력 JSON 형식]
       [
