@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -37,6 +37,16 @@ class IndividualReportRequest(BaseModel):
     totalImages: int
     defectInfo: List[DefectInfoSchema]
 
+class Images(BaseModel):
+    imageId: str
+    imageUrl: str
+
+class QualityState(BaseModel):
+    imageType: Optional[str]
+    images: List[Images]
+
+    reference_cases: Optional[List[dict[str, str]]] =None
+    inspection_result: Optional[dict] = None
 
 # ── Mockup ────────────────────────────────────────────────
 MOCK_INDIVIDUAL_REPORT_REQUEST = IndividualReportRequest(
@@ -66,4 +76,11 @@ MOCK_DAILY_REPORT_REQUEST = DailyReportRequest(
             ],
         ),
     )
+)
+
+MOCK_IMAGE_QUALITY = QualityState(
+    imageType="RGB",
+    images=[
+        Images(imageId="TARGET_RGB_01", imageUrl="./app/data/rgb_focus_failure.jpg")
+    ]
 )

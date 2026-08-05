@@ -24,6 +24,7 @@ def extract_embedding(image_path: str) -> list:
     
     with torch.no_grad():
         features = embedding_model.get_image_features(**inputs)
+        features = features.pooler_output
         features = features / features.norm(p=2, dim=-1, keepdim=True)
         
     return features.squeeze().tolist()
@@ -43,137 +44,137 @@ def setup_initial_database(): # 실제 서비스 시 url 변경!
     initial_defect_data = [
         {
             "id": "rgb_focus_failure",
-            "path": "/app/data/rgb_focus_failure.jpg",
+            "path": "./app/data/rgb_focus_failure.jpg",
             "metadata": {
                 "image_type": "RGB",
                 "failType": "rgb_focus_failure", 
-                "url": "/app/data/rgb_focus_failure.jpg"
+                "url": "./app/data/rgb_focus_failure.jpg"
             }
         },
         {
             "id": "rgb_hair_contamination",
-            "path": "/app/data/rgb_hair_contamination.jpg",
+            "path": "./app/data/rgb_hair_contamination.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_hair_contamination", 
-            "url": "/app/data/rgb_hair_contamination.jpg"
+            "url": "./app/data/rgb_hair_contamination.jpg"
             }
         },
         {
             "id": "rgb_NONE",
-            "path": "/app/data/rgb_NONE.jpg",
+            "path": "./app/data/rgb_NONE.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_NONE", 
-            "url": "/app/data/rgb_NONE.jpg"
+            "url": "./app/data/rgb_NONE.jpg"
             }
         },
         {
             "id": "rgb_overexposure",
-            "path": "/app/data/rgb_overexposure.jpg",
+            "path": "./app/data/rgb_overexposure.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_overexposure", 
-            "url": "/app/data/rgb_overexposure.jpg"
+            "url": "./app/data/rgb_overexposure.jpg"
             }
         },
         {
             "id": "rgb_reflection_glare",
-            "path": "/app/data/rgb_reflection_glare.jpg",
+            "path": "./app/data/rgb_reflection_glare.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_reflection_glare", 
-            "url": "/app/data/rgb_reflection_glare.jpg"
+            "url": "./app/data/rgb_reflection_glare.jpg"
             }
         },
         {
             "id": "rgb_surface_dust",
-            "path": "/app/data/rgb_surface_dust.jpg",
+            "path": "./app/data/rgb_surface_dust.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_surface_dust", 
-            "url": "/app/data/rgb_surface_dust.jpg"
+            "url": "./app/data/rgb_surface_dust.jpg"
             }
         },
         {
             "id": "rgb_trigger_timing_failure",
-            "path": "/app/data/rgb_trigger_timing_failure.jpg",
+            "path": "./app/data/rgb_trigger_timing_failure.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_trigger_timing_failure", 
-            "url": "/app/data/rgb_trigger_timing_failure.jpg"
+            "url": "./app/data/rgb_trigger_timing_failure.jpg"
             }
         },
         {
             "id": "rgb_underexposure",
-            "path": "/app/data/rgb_underexposure.jpg",
+            "path": "./app/data/rgb_underexposure.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_underexposure", 
-            "url": "/app/data/rgb_underexposure.jpg"
+            "url": "./app/data/rgb_underexposure.jpg"
             }
         },
         {
             "id": "rgb_uneven_lighting",
-            "path": "/app/data/rgb_uneven_lighting.jpg",
+            "path": "./app/data/rgb_uneven_lighting.jpg",
             "metadata": {
             "image_type": "RGB",
             "failType": "rgb_uneven_lighting", 
-            "url": "/app/data/rgb_uneven_lighting.jpg"
+            "url": "./app/data/rgb_uneven_lighting.jpg"
             }
         },
         {
             "id": "ct_cell_alignment_failure",
-            "path": "/app/data/ct_cell_alignment_failure.jpg",
+            "path": "./app/data/ct_cell_alignment_failure.jpg",
             "metadata": {
             "image_type": "CT",
             "failType": "ct_cell_alignment_failure", 
-            "url": "/app/data/ct_cell_alignment_failure.jpg"
+            "url": "./app/data/ct_cell_alignment_failure.jpg"
             }
         },
         {
             "id": "ct_acquisition_motion",
-            "path": "/app/data/ct_acquisition_motion.jpg",
+            "path": "./app/data/ct_acquisition_motion.jpg",
             "metadata": {
             "image_type": "CT",
             "failType": "ct_acquisition_motion", 
-            "url": "/app/data/ct_acquisition_motion.jpg"
+            "url": "./app/data/ct_acquisition_motion.jpg"
             }
         },
         {
             "id": "ct_insufficient_projection_sampling",
-            "path": "/app/data/ct_insufficient_projection_sampling.jpg",
+            "path": "./app/data/ct_insufficient_projection_sampling.jpg",
             "metadata": {
             "image_type": "CT",
             "failType": "ct_insufficient_projection_sampling", 
-            "url": "/app/data/ct_insufficient_projection_sampling.jpg"
+            "url": "./app/data/ct_insufficient_projection_sampling.jpg"
             }
         },
         {
             "id": "ct_low_signal_noise",
-            "path": "/app/data/ct_low_signal_noise.jpg",
+            "path": "./app/data/ct_low_signal_noise.jpg",
             "metadata": {
             "image_type": "CT",
             "failType": "ct_low_signal_noise", 
-            "url": "/app/data/ct_low_signal_noise.jpg"
+            "url": "./app/data/ct_low_signal_noise.jpg"
             }
         },
         {
             "id": "ct_beam_hardening_metal_streak",
-            "path": "/app/data/ct_beam_hardening_metal_streak.jpg",
+            "path": "./app/data/ct_beam_hardening_metal_streak.jpg",
             "metadata": {
             "image_type": "CT",
             "failType": "ct_beam_hardening_metal_streak", 
-            "url": "/app/data/ct_beam_hardening_metal_streak.jpg"
+            "url": "./app/data/ct_beam_hardening_metal_streak.jpg"
             }
         },
         {
             "id": "ct_NONE",
-            "path": "/app/data/ct_NONE.jpg",
+            "path": "./app/data/ct_NONE.jpg",
             "metadata": {
             "image_type": "CT",
             "failType": "ct_NONE", 
-            "url": "/app/data/ct_NONE.jpg"
+            "url": "./app/data/ct_NONE.jpg"
             }
         },
     ]

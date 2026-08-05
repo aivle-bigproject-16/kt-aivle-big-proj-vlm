@@ -34,7 +34,7 @@ async def invoke_qwen_hf(
     text = hf_tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True
     )
-    inputs = hf_tokenizer(text, return_tensors="pt").to("cuda")
+    inputs = hf_tokenizer(text, return_tensors="pt").to("cpu")
 
     def generate():
         return hf_model.generate(

@@ -84,7 +84,7 @@ async def image_quality_inspection_node(state: QualityState):
       * rgb_hair_contamination: 길고 얇은 검정 또는 갈색 곡선이 표면을 가림.
       * rgb_NONE: 위 결함이 없는 정상적인 RGB 영상.
 
-      [출력 JSON 형식]
+      [출력 형식]
       [
         {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
         {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}

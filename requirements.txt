@@ -20,3 +20,8 @@ boto3
 
 # Environment
 python-dotenv
+
+# Vector DB & Image Processing (추가된 부분)
+chromadb
+pillow
+requests
