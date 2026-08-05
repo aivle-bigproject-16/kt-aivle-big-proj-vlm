@@ -24,6 +24,7 @@ def extract_embedding(image_path: str) -> list:
     
     with torch.no_grad():
         features = embedding_model.get_image_features(**inputs)
+        features = features.pooler_output
         features = features / features.norm(p=2, dim=-1, keepdim=True)
         
     return features.squeeze().tolist()

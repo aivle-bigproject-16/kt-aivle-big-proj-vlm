@@ -9,4 +9,4 @@ class QualityState(TypedDict):
     images: List[Images]
 
     reference_cases: Optional[List[dict[str, str]]]
-    inspection_result: Optional[dict]
+    inspection_result: Optional[str]
