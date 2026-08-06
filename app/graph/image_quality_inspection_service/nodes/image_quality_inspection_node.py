@@ -71,7 +71,7 @@ async def image_quality_inspection_node(state: QualityState):
 
         [출력 JSON 형식]
         반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
-        ct_NONE(정상)이라면 *{{"imageId":"분석 대상 ID", "failType":"ct_NONE", "description":"정상"}}*으로 적으세요
+        **반드시 이미지별로 빠짐 없이 json이 있어야합니다.**
         [
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
@@ -97,7 +97,7 @@ async def image_quality_inspection_node(state: QualityState):
 
         [출력 형식]
         반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요. 이미지당 오직 하나의 json을 만드세요.
-        ct_NONE(정상)이라면 *{{"imageId":"분석 대상 ID", "failType":"ct_NONE", "description":"정상"}}*으로 적으세요
+        **반드시 이미지별로 빠짐 없이 json이 있어야합니다.**
         [
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
