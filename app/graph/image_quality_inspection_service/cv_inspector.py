@@ -41,7 +41,7 @@ def check_boundary_cutoff(gray_img: np.ndarray, margin: int = 5) -> bool:
 def check_physical_quality(
     image_source: str, 
     image_type: str = "RGB",
-    blur_threshold: float = 150.0, 
+    blur_threshold: float = 50.0, 
     under_threshold: float = 40.0, 
     over_threshold: float = 215.0,
     noise_threshold: float = 50.0  # CT 노이즈 판별 임계값 (표준편차)
