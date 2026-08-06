@@ -42,7 +42,7 @@ def check_physical_quality(
     image_source: str, 
     image_type: str = "RGB",
     blur_threshold: float = 18.0, 
-    under_threshold: float = 100.0, 
+    under_threshold: float = 70.0, 
     over_threshold: float = 240.0
 ) -> tuple[str | None, str]:
     try:
@@ -53,8 +53,11 @@ def check_physical_quality(
             laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
             if laplacian_var < blur_threshold:
                 return "rgb_focus_failure", f"선명도 점수({laplacian_var:.1f}) 미달로 초점 불량."
+            
+            h, w = img.shape[:2]
+            roi = gray[int(h*0.25):int(h*0.75), int(w*0.25):int(w*0.75)]
+            mean_brightness = float(np.mean(roi))
 
-            mean_brightness = float(np.mean(gray))
             if mean_brightness < under_threshold:
                 return "rgb_underexposure", f"평균 밝기({mean_brightness:.1f}) 미달로 노출 부족."
             elif mean_brightness > over_threshold:
