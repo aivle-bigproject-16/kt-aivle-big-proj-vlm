@@ -1,4 +1,5 @@
 import json
+import re
 
 from app.clients.vllm_client import invoke_qwen_hf
 from app.graph.image_quality_inspection_service.state import QualityState
