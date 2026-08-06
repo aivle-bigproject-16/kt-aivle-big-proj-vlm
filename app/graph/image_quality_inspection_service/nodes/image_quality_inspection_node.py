@@ -43,7 +43,7 @@ async def image_quality_inspection_node(state: QualityState):
       user_msg = f"""
       제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다.
       당신에게 두 그룹(과거 불량 사례, 분석 대상 이미지)의 이미지가 번갈아서 제공됩니다.
-      분석 대상 이미지를 분석하여 어떤 촬영 장비 및 설정 오류로 인한 화질 불량인지 판별하세요.
+      분석 대상 이미지를 분석하여 이미지 당 하나의 어떤 물리적 환경 및 설정 오류로 인한 화질 불량 원인을 판별하세요.
       
       [분석 세트 안내]
       {context}
@@ -58,8 +58,8 @@ async def image_quality_inspection_node(state: QualityState):
 
       [출력 JSON 형식]
       [
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+        {{"imageId":"분석한 이미지 ID", "ref_failtype": 참고한 이미지 실패 케이스, "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        ...
       ]
       """
     else:
@@ -68,7 +68,7 @@ async def image_quality_inspection_node(state: QualityState):
       user_msg = f"""
       제공된 이미지는 배터리 셀의 외부 표면을 촬영한 RGB 영상입니다. 
       당신에게 두 그룹(과거 불량 사례, 분석 대상 이미지)의 이미지가 번갈아서 제공됩니다.
-      분석 대상 이미지를 분석하여 어떤 물리적 환경 및 설정 오류로 인한 화질 불량인지 판별하세요.
+      분석 대상 이미지를 분석하여 이미지 당 하나의 어떤 물리적 환경 및 설정 오류로 인한 화질 불량 원인을 판별하세요.
 
       [분석 세트 안내]
       {context}
@@ -86,8 +86,8 @@ async def image_quality_inspection_node(state: QualityState):
 
       [출력 형식]
       [
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+        {{"imageId":"분석한 이미지 ID", "ref_failtype": 참고한 이미지 실패 케이스, "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        ...
       ]
       """
 
