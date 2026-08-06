@@ -12,8 +12,9 @@ def image_quality_inspection_graph():
     workflow.add_node("reference_by_db_node", reference_by_db_node)
     
     # 엣지 연결 (순차 실행: QA 검증 -> 외관 점검)
-    workflow.add_edge(START, "reference_by_db_node")
-    workflow.add_edge("reference_by_db_node", "image_quality_inspection_node")
+    # workflow.add_edge(START, "reference_by_db_node")
+    # workflow.add_edge("reference_by_db_node", "image_quality_inspection_node")
+    workflow.add_edge(START, "image_quality_inspection_node")
     workflow.add_edge("image_quality_inspection_node", END)
     
     return workflow.compile()

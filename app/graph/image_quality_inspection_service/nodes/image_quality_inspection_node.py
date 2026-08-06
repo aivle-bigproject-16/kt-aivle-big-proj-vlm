@@ -92,5 +92,8 @@ async def image_quality_inspection_node(state: QualityState):
       """
 
     response_text = await invoke_qwen_hf(system_msg, user_msg,all_image_urls)
+    clean_response = re.sub(r'```json\n|```', '', response_text).strip()
+
+    data_list = json.loads(clean_response)
 
     return {"inspection_result": response_text}
