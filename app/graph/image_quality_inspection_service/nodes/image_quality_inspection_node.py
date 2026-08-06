@@ -27,7 +27,7 @@ async def image_quality_inspection_node(state: QualityState):
             
             context_parts.append(
                 f"* 이미지 {ref_idx} (과거 불량 사례): 판정 유형 [{ref['ref_failType']}]\n"
-                f"* 이미지 {target_idx} (실제 분석 대상): 이미지 {ref_idx}를 참고하여 이 이미지의 불량 여부를 판독하세요."
+                f"* 이미지 {target_idx} (실제 분석 대상): 이미지 {ref_idx}(과거 사례)를 우선 참고하되, 두 이미지의 결함 양상이 명확히 다르다고 판단되면 과거 사례를 무시하고 [판별 기준]에 따라 독립적으로 판독하세요."
             )
         else:
             all_image_urls.append(img["imageUrl"])
