@@ -1,9 +1,9 @@
 import json
 import re
 
+from app.graph.image_quality_inspection_service.cv_inspector import check_physical_quality # OpenCV 모듈 임포트
 from app.clients.vllm_client import invoke_qwen_hf
 from app.graph.image_quality_inspection_service.state import QualityState
-from app.utils.cv_inspector import check_physical_quality # OpenCV 모듈 임포트
 
 async def image_quality_inspection_node(state: QualityState):
     images = state.get("images", [])
