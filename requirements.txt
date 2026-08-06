@@ -25,3 +25,4 @@ python-dotenv
 chromadb
 pillow
 requests
+qwen_vl_utils
