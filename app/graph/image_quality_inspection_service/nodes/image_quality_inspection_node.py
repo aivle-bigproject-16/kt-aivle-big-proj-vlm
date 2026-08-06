@@ -1,7 +1,7 @@
 import json
 import re
 
-from app.graph.image_quality_inspection_service.cv_inspector import check_physical_quality # OpenCV 모듈 임포트
+from app.graph.image_quality_inspection_service.cv_inspector import check_physical_quality
 from app.clients.vllm_client import invoke_qwen_hf
 from app.graph.image_quality_inspection_service.state import QualityState
 
@@ -9,35 +9,31 @@ async def image_quality_inspection_node(state: QualityState):
     images = state.get("images", [])
     image_type = state.get("imageType","")
 
-    reference_cases = state.get("reference_cases", [])
-    ref_dict = {ref["target_imageId"]: ref for ref in reference_cases}
-
     results = []
     vlm_target_images = []
 
-    if image_type == "RGB":
-        for img in images:
-            target_id = img["imageId"]
-            image_url = img["imageUrl"]
-            
-            fail_type, desc = check_physical_quality(image_url)
-            
-            if fail_type:
-                ref = ref_dict.get(target_id, {})
-                results.append({
-                    "imageId": target_id,
-                    "ref_failtype": ref.get("ref_failType", "NONE"),
-                    "failType": fail_type,
-                    "description": f"[OpenCV 자동검출] {desc}"
-                })
-            else:
-                # 정상일 경우 VLM 정밀 검사 대상으로 분류
-                vlm_target_images.append(img)
-    else:
-        # CT 영상은 OpenCV 검사 없이 모두 VLM으로 넘김
-        vlm_target_images = images
+    # -------------------------------------------------------------
+    # [STEP 1] OpenCV 사전 물리적 결함 검사 (RGB & CT 공통 적용)
+    # -------------------------------------------------------------
+    for img in images:
+        target_id = img["imageId"]
+        image_url = img["imageUrl"]
+        
+        # image_type 인자를 넘겨 RGB와 CT에 맞는 개별 검사 수행
+        fail_type, desc = check_physical_quality(image_url, image_type=image_type)
+        
+        if fail_type:
+            # OpenCV에서 불량으로 확정된 경우 VLM 분석 생략
+            results.append({
+                "imageId": target_id,
+                "failType": fail_type,
+                "description": f"[OpenCV 자동검출] {desc}"
+            })
+        else:
+            # 사전 검사(잘림, 초점, 노출, 노이즈 등)를 통과한 이미지만 VLM으로 인계
+            vlm_target_images.append(img)
 
-    # 모든 이미지가 OpenCV에서 불량 처리되어 VLM에 넘길 이미지가 없다면 즉시 반환
+    # 모두 불량 판정되어 VLM에 넘길 이미지가 없다면 즉시 반환
     if not vlm_target_images:
         return {"inspection_result": results}
 
@@ -47,28 +43,13 @@ async def image_quality_inspection_node(state: QualityState):
     all_image_urls = []
     context_parts = []
 
-    for img in vlm_target_images:
+    for idx, img in enumerate(vlm_target_images):
+        target_idx = idx + 1
         target_id = img["imageId"]
-        ref = ref_dict.get(target_id) 
-        context_parts.append(f"\n--- 분석 대상 ID: {target_id} ---")
+
+        context_parts.append(f"이미지 {target_idx}번의 분석 대상 ID: {target_id}")
+        all_image_urls.append(img["imageUrl"])
         
-        if ref:
-            all_image_urls.append(ref["ref_imageUrl"])
-            ref_idx = len(all_image_urls)
-            
-            all_image_urls.append(img["imageUrl"])
-            target_idx = len(all_image_urls)
-            
-            context_parts.append(
-                f"* 이미지 {ref_idx} (과거 불량 사례): 판정 유형 [{ref['ref_failType']}]\n"
-                f"* 이미지 {target_idx} (실제 분석 대상): 이미지 {ref_idx}(과거 사례)를 우선 참고하되, 두 이미지의 결함 양상이 명확히 다르다고 판단되면 과거 사례를 무시하고 [판별 기준]에 따라 독립적으로 판독하세요."
-            )
-        else:
-            all_image_urls.append(img["imageUrl"])
-            target_idx = len(all_image_urls)
-            context_parts.append(
-                f"* 이미지 {target_idx} (실제 분석 대상): 과거 참고 사례가 없습니다. 독립적으로 판독하세요."
-            )
     context = "\n".join(context_parts)
 
     if image_type == "CT":
@@ -89,8 +70,8 @@ async def image_quality_inspection_node(state: QualityState):
         [출력 JSON 형식]
         반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
         [
-          {{"imageId":"분석 이미지 ID", "ref_failtype": "참고한 이미지 실패 케이스", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-          {{"imageId":"분석 이미지 ID", "ref_failtype": "참고한 이미지 실패 케이스", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+          {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+          {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
         ]
         """
     else:
@@ -113,8 +94,8 @@ async def image_quality_inspection_node(state: QualityState):
         [출력 형식]
         반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
         [
-          {{"imageId":"분석 이미지 ID", "ref_failtype": "참고한 이미지 실패 케이스", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-          {{"imageId":"분석 이미지 ID", "ref_failtype": "참고한 이미지 실패 케이스", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+          {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+          {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
         ]
         """
 
