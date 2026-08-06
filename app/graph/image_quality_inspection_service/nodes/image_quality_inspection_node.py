@@ -20,7 +20,7 @@ async def image_quality_inspection_node(state: QualityState):
         image_url = img["imageUrl"]
         
         # image_type 인자를 넘겨 RGB와 CT에 맞는 개별 검사 수행
-        fail_type, desc = check_physical_quality(image_url, image_type=image_type)
+        fail_type, desc = check_physical_quality(image_source=image_url, image_type=image_type)
         
         if fail_type:
             # OpenCV에서 불량으로 확정된 경우 VLM 분석 생략
@@ -49,7 +49,7 @@ async def image_quality_inspection_node(state: QualityState):
 
         context_parts.append(f"이미지 {target_idx}번의 분석 대상 ID: {target_id}")
         all_image_urls.append(img["imageUrl"])
-        
+
     context = "\n".join(context_parts)
 
     if image_type == "CT":
