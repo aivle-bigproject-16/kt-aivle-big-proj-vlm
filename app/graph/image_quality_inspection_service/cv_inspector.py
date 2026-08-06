@@ -42,7 +42,7 @@ def check_physical_quality(
     image_source: str, 
     image_type: str = "RGB",
     blur_threshold: float = 18.0, 
-    under_threshold: float = 80.0, 
+    under_threshold: float = 100.0, 
     over_threshold: float = 240.0
 ) -> tuple[str | None, str]:
     try:
