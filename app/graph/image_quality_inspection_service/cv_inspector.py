@@ -42,9 +42,8 @@ def check_physical_quality(
     image_source: str, 
     image_type: str = "RGB",
     blur_threshold: float = 18.0, 
-    under_threshold: float = 70.0, 
-    over_threshold: float = 240.0,
-    noise_threshold: float = 20.0  # CT 노이즈 판별 임계값 (표준편차)
+    under_threshold: float = 80.0, 
+    over_threshold: float = 240.0
 ) -> tuple[str | None, str]:
     try:
         img = load_cv2_image(image_source)

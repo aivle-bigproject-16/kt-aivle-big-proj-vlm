@@ -41,11 +41,9 @@ async def image_quality_inspection_node(state: QualityState):
     # [STEP 2] VLM (Qwen) 정밀 검사 (1 이미지 당 개별 호출로 변경)
     # -------------------------------------------------------------
     
-    for idx, img in enumerate(vlm_target_images):
+    for img in vlm_target_images:
         target_id = img["imageId"]
         image_url = img["imageUrl"]
-        
-        print(f"[server] 🔄 [{target_id}] Qwen 개별 추론 시작 ({idx + 1}/{len(vlm_target_images)})...")
 
         if image_type == "CT":
             system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
