@@ -53,7 +53,8 @@ async def image_quality_inspection_node(state: QualityState):
       
       user_msg = f"""
       제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다.
-      분석 대상 이미지를 분석하여 이미지 당 하나의 어떤 물리적 환경 및 설정 오류로 인한 화질 불량 원인을 판별하세요.
+      입력된 **모든** 이미지를 각각 분석하여, 각 이미지 당 발생하는 물리적 환경 및 설정 오류로 인한 화질 불량 원인을 판별하세요.
+      (주의: 입력된 이미지의 개수만큼 결과를 생성해야 합니다.)
       
       [판별 기준: CT 촬영 실패 케이스]
       * ct_cell_alignment_failure: 배터리 일부가 촬영 영역 밖으로 벗어나 외곽과 내부 구조 일부가 잘림.
@@ -64,9 +65,10 @@ async def image_quality_inspection_node(state: QualityState):
       * ct_NONE: 위 결함이 없는 정상적인 CT 영상.
 
       [출력 JSON 형식]
+      반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
       [
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-        ...
+        {{"imageId":"첫번째 분석 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        {{"imageId":"두번째 분석 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
       ]
       """
     else:
@@ -74,7 +76,8 @@ async def image_quality_inspection_node(state: QualityState):
       
       user_msg = f"""
       제공된 이미지는 배터리 셀의 외부 표면을 촬영한 RGB 영상입니다.
-      분석 대상 이미지를 분석하여 이미지 당 하나의 어떤 물리적 환경 및 설정 오류로 인한 화질 불량 원인을 판별하세요.
+      입력된 **모든** 이미지를 각각 분석하여, 각 이미지 당 발생하는 물리적 환경 및 설정 오류로 인한 화질 불량 원인을 판별하세요.
+      (주의: 입력된 이미지의 개수만큼 결과를 생성해야 합니다.)
 
       [판별 기준: RGB 촬영 실패 케이스]
       * rgb_trigger_timing_failure: 배터리 앞부분 또는 뒷부분이 잘린 이미지.
@@ -88,9 +91,10 @@ async def image_quality_inspection_node(state: QualityState):
       * rgb_NONE: 위 결함이 없는 정상적인 RGB 영상.
 
       [출력 형식]
+      반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
       [
-        {{"imageId":"분석한 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
-        ...
+        {{"imageId":"첫번째 분석 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
+        {{"imageId":"두번째 분석 이미지 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
       ]
       """
 
