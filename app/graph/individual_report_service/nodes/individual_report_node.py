@@ -82,6 +82,8 @@ async def individual_report_node(state: ReportState) -> dict:
     * **[결함타입명]:** [발생 건수]건
     * **[결함타입명]:** [발생 건수]건
     * **분석 코멘트:** [현재 셀의 불량 양상에 대한 짧은 요약.]
+
+    ### 셀 결함의 확률은 AI를 통해 계산되었습니다. 자세한 분류는 사진을 확인해주세요.
     """
 
     if critic_issues:
