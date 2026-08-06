@@ -45,7 +45,6 @@ class QualityState(BaseModel):
     imageType: Optional[str]
     images: List[Images]
 
-    reference_cases: Optional[List[dict[str, str]]] =None
     inspection_result: Optional[dict] = None
 
 # ── Mockup ────────────────────────────────────────────────

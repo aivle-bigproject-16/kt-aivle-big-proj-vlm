@@ -92,7 +92,7 @@ async def image_quality_inspection_node(state: QualityState):
         * rgb_NONE: 위 결함이 없는 정상적인 RGB 영상.
 
         [출력 형식]
-        반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
+        반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요. 이미지당 오직 하나의 json을 만드세요.
         [
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
