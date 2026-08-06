@@ -50,18 +50,6 @@ def check_physical_quality(
         img = load_cv2_image(image_source)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # -------------------------------------------------------------
-        # 1. 공통 검사: 객체 잘림 (RGB 타이밍 불량 / CT 정렬 이탈)
-        # -------------------------------------------------------------
-        if check_boundary_cutoff(gray):
-            if image_type == "RGB":
-                return "rgb_trigger_timing_failure", "객체가 이미지 경계에 닿아 앞/뒷부분이 잘림 (타이밍 오류)."
-            else:
-                return "ct_cell_alignment_failure", "배터리가 촬영 영역을 벗어나 외곽이 잘림 (정렬 이탈)."
-
-        # -------------------------------------------------------------
-        # 2. RGB 전용 검사: 초점 및 노출
-        # -------------------------------------------------------------
         if image_type == "RGB":
             laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
             if laplacian_var < blur_threshold:
@@ -73,9 +61,6 @@ def check_physical_quality(
             elif mean_brightness > over_threshold:
                 return "rgb_overexposure", f"평균 밝기({mean_brightness:.1f}) 초과로 노출 과다."
 
-        # -------------------------------------------------------------
-        # 3. CT 전용 검사: 과도한 노이즈
-        # -------------------------------------------------------------
         elif image_type == "CT":
             # CT 영상 전체 픽셀의 표준편차를 통해 노이즈 강도 측정
             _, stddev = cv2.meanStdDev(gray)
@@ -84,6 +69,13 @@ def check_physical_quality(
             # 노이즈가 과도하게 많으면 표준편차가 크게 나타남 (데이터셋에 맞춰 임계값 조절 필요)
             if stddev_val > noise_threshold:
                  return "ct_low_signal_noise", f"노이즈 수치({stddev_val:.1f}) 초과로 화질 저하 (Poisson noise 등)."
+
+        if check_boundary_cutoff(gray):
+            if image_type == "RGB":
+                return "rgb_trigger_timing_failure", "객체가 이미지 경계에 닿아 앞/뒷부분이 잘림 (타이밍 오류)."
+            else:
+                return "ct_cell_alignment_failure", "배터리가 촬영 영역을 벗어나 외곽이 잘림 (정렬 이탈)."
+        
 
         return None, "OpenCV 사전 검사 통과"
     except Exception as e:
