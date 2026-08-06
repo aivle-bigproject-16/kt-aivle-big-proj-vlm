@@ -61,16 +61,6 @@ def check_physical_quality(
             elif mean_brightness > over_threshold:
                 return "rgb_overexposure", f"평균 밝기({mean_brightness:.1f}) 초과로 노출 과다."
 
-        elif image_type == "CT":
-            # CT 영상 전체 픽셀의 표준편차를 통해 노이즈 강도 측정
-            _, stddev = cv2.meanStdDev(gray)
-            stddev_val = float(stddev[0][0])
-            
-            # 노이즈가 과도하게 많으면 표준편차가 크게 나타남 (데이터셋에 맞춰 임계값 조절 필요)
-            if stddev_val > noise_threshold:
-                 return "ct_low_signal_noise", f"노이즈 수치({stddev_val:.1f}) 초과로 화질 저하 (Poisson noise 등)."
-        
-
         return None, "OpenCV 사전 검사 통과"
     except Exception as e:
         return None, f"OpenCV 검사 오류: {str(e)}"

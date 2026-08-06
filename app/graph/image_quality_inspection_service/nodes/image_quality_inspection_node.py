@@ -62,7 +62,8 @@ async def image_quality_inspection_node(state: QualityState):
         {context}
         
         [판별 기준: CT 촬영 실패 케이스]
-        * ct_cell_alignment_failure: 배터리 일부가 촬영 영역 밖으로 벗어나 외곽과 내부 구조 일부가 잘림
+        * ct_cell_alignment_failure: 배터리 일부가 촬영 영역 밖으로 벗어나 외곽과 내부 구조 일부가 잘림.
+        * ct_low_signal_noise: 입자성 Poisson noise가 증가하고, 대비와 미세 구조 식별력이 저하됨.
         * ct_acquisition_motion: 구조 경계의 방향성 흐림, 동일 구조가 이동 방향으로 이중으로 보이는 ghosting.
         * ct_insufficient_projection_sampling: 구조 주변 streak, 방향성 aliasing, 경계·세부 구조의 재구성 손실.
         * ct_beam_hardening_metal_streak: 고밀도 영역 주변 cupping·명암 왜곡과 방사형 밝고 어두운 streak.
@@ -70,6 +71,7 @@ async def image_quality_inspection_node(state: QualityState):
 
         [출력 JSON 형식]
         반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요.
+        ct_NONE(정상)이라면 *{{"imageId":"분석 대상 ID", "failType":"ct_NONE", "description":"정상"}}*으로 적으세요
         [
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
@@ -86,7 +88,7 @@ async def image_quality_inspection_node(state: QualityState):
         {context}
 
         [판별 기준: RGB 촬영 실패 케이스]
-        *rgb_trigger_timing_failure: 배터리 일부가 프레임 밖으로 잘림.
+        *rgb_trigger_timing_failure: 배터리 앞부분 또는 뒷부분이 잘린 이미지.
         * rgb_uneven_lighting: 한쪽은 밝고 다른 쪽은 어두운 불균일한 이미지.
         * rgb_reflection_glare: 흰 반사광이 표면 scratch 및 오염 부위를 덮음.
         * rgb_surface_dust: 표면에 작은 점, 얼룩, 입자 오염.
@@ -95,6 +97,7 @@ async def image_quality_inspection_node(state: QualityState):
 
         [출력 형식]
         반드시 아래와 같이 입력된 모든 이미지에 대한 결과를 포함하는 순수 JSON 배열만 출력하세요. 이미지당 오직 하나의 json을 만드세요.
+        ct_NONE(정상)이라면 *{{"imageId":"분석 대상 ID", "failType":"ct_NONE", "description":"정상"}}*으로 적으세요
         [
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}},
           {{"imageId":"분석 대상 ID", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
