@@ -42,7 +42,7 @@ def check_physical_quality(
     image_source: str, 
     image_type: str = "RGB",
     blur_threshold: float = 18.0, 
-    under_threshold: float = 60.0, 
+    under_threshold: float = 70.0, 
     over_threshold: float = 240.0,
     noise_threshold: float = 20.0  # CT 노이즈 판별 임계값 (표준편차)
 ) -> tuple[str | None, str]:
@@ -69,12 +69,6 @@ def check_physical_quality(
             # 노이즈가 과도하게 많으면 표준편차가 크게 나타남 (데이터셋에 맞춰 임계값 조절 필요)
             if stddev_val > noise_threshold:
                  return "ct_low_signal_noise", f"노이즈 수치({stddev_val:.1f}) 초과로 화질 저하 (Poisson noise 등)."
-
-        if check_boundary_cutoff(gray):
-            if image_type == "RGB":
-                return "rgb_trigger_timing_failure", "객체가 이미지 경계에 닿아 앞/뒷부분이 잘림 (타이밍 오류)."
-            else:
-                return "ct_cell_alignment_failure", "배터리가 촬영 영역을 벗어나 외곽이 잘림 (정렬 이탈)."
         
 
         return None, "OpenCV 사전 검사 통과"
