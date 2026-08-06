@@ -41,10 +41,9 @@ def check_boundary_cutoff(gray_img: np.ndarray, margin: int = 5) -> bool:
 def check_physical_quality(
     image_source: str, 
     image_type: str = "RGB",
-    blur_threshold: float = 20.0, 
-    under_threshold: float = 60.0, 
-    over_threshold: float = 230.0,
-    noise_threshold: float = 30.0  # CT 노이즈 판별 임계값 (표준편차)
+    blur_threshold: float = 18.0, 
+    under_threshold: float = 70.0, 
+    over_threshold: float = 240.0
 ) -> tuple[str | None, str]:
     try:
         img = load_cv2_image(image_source)
@@ -54,28 +53,15 @@ def check_physical_quality(
             laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
             if laplacian_var < blur_threshold:
                 return "rgb_focus_failure", f"선명도 점수({laplacian_var:.1f}) 미달로 초점 불량."
+            
+            h, w = img.shape[:2]
+            roi = gray[int(h*0.25):int(h*0.75), int(w*0.40):int(w*0.60)]
+            mean_brightness = float(np.mean(roi))
 
-            mean_brightness = float(np.mean(gray))
             if mean_brightness < under_threshold:
                 return "rgb_underexposure", f"평균 밝기({mean_brightness:.1f}) 미달로 노출 부족."
             elif mean_brightness > over_threshold:
                 return "rgb_overexposure", f"평균 밝기({mean_brightness:.1f}) 초과로 노출 과다."
-
-        elif image_type == "CT":
-            # CT 영상 전체 픽셀의 표준편차를 통해 노이즈 강도 측정
-            _, stddev = cv2.meanStdDev(gray)
-            stddev_val = float(stddev[0][0])
-            
-            # 노이즈가 과도하게 많으면 표준편차가 크게 나타남 (데이터셋에 맞춰 임계값 조절 필요)
-            if stddev_val > noise_threshold:
-                 return "ct_low_signal_noise", f"노이즈 수치({stddev_val:.1f}) 초과로 화질 저하 (Poisson noise 등)."
-
-        if check_boundary_cutoff(gray):
-            if image_type == "RGB":
-                return "rgb_trigger_timing_failure", "객체가 이미지 경계에 닿아 앞/뒷부분이 잘림 (타이밍 오류)."
-            else:
-                return "ct_cell_alignment_failure", "배터리가 촬영 영역을 벗어나 외곽이 잘림 (정렬 이탈)."
-        
 
         return None, "OpenCV 사전 검사 통과"
     except Exception as e:
