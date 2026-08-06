@@ -10,5 +10,5 @@ class ReportResponse(BaseModel):
 
 class ImageResponse(BaseModel):
     status: str
-    content: Optional[str]
+    content: Optional[list[dict]]
     failureReason: Optional[str]
