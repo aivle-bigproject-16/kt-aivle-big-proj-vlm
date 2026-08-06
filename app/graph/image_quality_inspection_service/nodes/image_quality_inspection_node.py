@@ -1,7 +1,7 @@
 import json
 import re
 
-from app.graph.image_quality_inspection_service.cv_inspector import check_physical_quality
+from app.graph.image_quality_inspection_service.cv_inspection import check_physical_quality
 from app.clients.vllm_client import invoke_qwen_hf
 from app.graph.image_quality_inspection_service.state import QualityState
 
