@@ -55,7 +55,7 @@ def check_physical_quality(
                 return "rgb_focus_failure", f"선명도 점수({laplacian_var:.1f}) 미달로 초점 불량."
             
             h, w = img.shape[:2]
-            roi = gray[int(h*0.25):int(h*0.75), int(w*0.25):int(w*0.75)]
+            roi = gray[int(h*0.25):int(h*0.75), int(w*0.40):int(w*0.60)]
             mean_brightness = float(np.mean(roi))
 
             if mean_brightness < under_threshold:
