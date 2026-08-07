@@ -45,46 +45,7 @@ async def image_quality_inspection_node(state: QualityState):
         target_id = img["imageId"]
         image_url = img["imageUrl"]
 
-        if image_type == "CT":
-            image_url = ["./app/data/ct_NONE.jpg", "./app/data/ct_insufficient_projection_sampling.jpg",
-                         "./app/data/ct_cell_alignment_failure.jpg", "./app/data/ct_beam_hardening_metal_streak.jpg",
-                         "./app/data/ct_acquisition_motion.jpg", image_url] 
-
-            system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
-
-            user_msg = f"""
-            제공된 6장의 이미지를 순서대로 비교 분석하세요.
-            
-            [이미지 순서 및 역할]
-            * 1번째 이미지 (Reference): 완벽하게 깨끗한 정상(rgb_NONE) 배터리의 표본입니다.
-            * 2번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_insufficient_projection_sampling)의 표본입니다.
-            * 3번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_cell_alignment_failure)의 표본입니다.
-            * 4번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_beam_hardening_metal_streak)의 표본입니다.
-            * 5번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_acquisition_motion)의 표본입니다.
-
-            * 6번째 이미지 (Target): 당신이 분석해야 할 대상 이미지입니다. (ID: {target_id})
-
-            [지시사항]
-            1, 2,3,4,5번째 레퍼런스 이미지와 6번째 타겟 이미지를 시각적으로 꼼꼼히 비교하십시오. 
-            타겟 이미지가 어떤 결함에 해당하는지 판별하세요.
-
-            [분석 대상 안내]
-            분석 대상 ID: {target_id}
-            
-            [판별 기준: CT 촬영 실패 케이스 및 핵심 관찰 포인트]
-            1. ct_NONE: 아래 결함이 전혀 없는 매끄럽고 선명한 정상 CT 영상
-            2. ct_acquisition_motion: [키워드: 이중 윤곽선, 방향성 흐림] 배터리의 테두리나 내부 층상 구조가 특정 방향으로 흔들려 두 겹(Ghosting)으로 보임.
-            3. ct_insufficient_projection_sampling: [키워드: 알리어싱, 재구성 손실] 외곽선이 계단처럼 깨져 보이며, 구조 주변으로 얕은 줄무늬(Streak)가 전체적으로 발생함.
-            4. ct_beam_hardening_metal_streak: [키워드: Cupping 왜곡, 강한 방사형 선] 특정 고밀도 영역을 중심으로 명암이 둥글게 왜곡되며, 밝고 어두운 강렬한 선들이 뻗어나감.
-            5. ct_cell_alignment_failure: [키워드: 인위적 직선 잘림] 배터리 본체가 이미지 경계 밖으로 벗어나 테두리가 날카로운 일직선으로 잘려나감. (화면에 꽉 찬 둥근 테두리는 정상임)
-
-            [출력 JSON 형식]
-            반드시 아래와 같은 형태의 단일 JSON 객체를 포함하는 배열을 출력하세요.
-            [
-              {{"imageId":"{target_id}" , "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
-            ]
-            """
-        else:
+        if image_type == "RGB":
             image_url = [image_url]
             system_msg = "당신은 배터리 외관 표면 RGB 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
@@ -112,7 +73,7 @@ async def image_quality_inspection_node(state: QualityState):
             """
 
         # 해당 이미지만 단독으로 전송하여 추론 (주의력 분산 방지)
-        response_text = await invoke_qwen_hf(system_msg, user_msg, image_url)
+        response_text = await invoke_qwen_hf(system_msg, user_msg, [image_url])
         clean_response = re.sub(r'```json\n|```', '', response_text).strip()
 
         try:
