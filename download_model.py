@@ -9,7 +9,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 load_dotenv()
 
-MODEL_ID = "Qwen/Qwen3.5-2B"
+MODEL_ID = "Qwen/Qwen/Qwen2-VL-2B-Instruct"
 
 
 def authenticate():
