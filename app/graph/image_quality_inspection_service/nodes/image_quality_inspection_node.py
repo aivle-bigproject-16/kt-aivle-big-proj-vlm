@@ -67,7 +67,7 @@ async def image_quality_inspection_node(state: QualityState):
             [출력 JSON 형식]
             반드시 아래와 같은 형태의 단일 JSON 객체를 포함하는 배열을 출력하세요.
             [
-              {{"imageId":"{target_id}", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+              {{"imageId":"{target_id}","reasoning": "이미지 표면의 오염 여부, 빛 반사, 잘림 여부 등을 구체적으로 관찰하고 분석한 내용", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
             ]
             """
         else:
@@ -92,7 +92,7 @@ async def image_quality_inspection_node(state: QualityState):
             [출력 형식]
             반드시 아래와 같은 형태의 단일 JSON 객체를 포함하는 배열을 출력하세요.
             [
-              {{"imageId":"{target_id}", "failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
+              {{"imageId":"{target_id}", "reasoning": "이미지 표면의 오염 여부, 빛 반사, 잘림 여부 등을 구체적으로 관찰하고 분석한 내용","failType":"판별 기준에 명시된 실패 케이스 ID", "description":"발견된 현상에 대한 시각적 근거 요약"}}
             ]
             """
 
