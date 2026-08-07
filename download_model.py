@@ -5,7 +5,7 @@ import sys
 import torch
 from dotenv import load_dotenv
 from huggingface_hub import get_token, login
-from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 
 load_dotenv()
 
@@ -32,7 +32,7 @@ def download_model():
     print(f"\n📦 모델 다운로드 시작: {MODEL_ID}")
     print("   (첫 실행 시 수 GB 다운로드 — 시간이 걸릴 수 있습니다)\n")
 
-    model = Qwen2VLForConditionalGeneration.from_pretrained(
+    model = Qwen3VLForConditionalGeneration.from_pretrained(
         MODEL_ID,
         dtype='auto',
         device_map="auto",
