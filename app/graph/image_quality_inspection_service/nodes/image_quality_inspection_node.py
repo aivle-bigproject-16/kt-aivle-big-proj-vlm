@@ -46,14 +46,25 @@ async def image_quality_inspection_node(state: QualityState):
         image_url = img["imageUrl"]
 
         if image_type == "CT":
-            image_url = image_url + [".app/data/ct_NONE.jpg", ".app/data/ct_insufficient_projection_sampling.jpg", ".app/data/ct_cell_alignment_failure.jpg", ".app/data/ct_beam_hardening_metal_streak.jpg", ".app/data/ct_acquisition_motion.jpg"]
-            
+            image_url = [".app/data/ct_NONE.jpg", ".app/data/ct_insufficient_projection_sampling.jpg", ".app/data/ct_cell_alignment_failure.jpg", ".app/data/ct_beam_hardening_metal_streak.jpg", ".app/data/ct_acquisition_motion.jpg"] + [image_url] 
+
             system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
             user_msg = f"""
-            제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다.
-            분석 대상 이미지를 분석하여, 가장 유력한 이미지 화질 불량 원인 하나만 판별하세요.
-            이미지의 시각적 특징을 먼저 논리적으로 분석한 뒤, 가장 유력한 상태를 하나만 판별하세요.
+            제공된 3장의 이미지를 순서대로 비교 분석하세요.
+            
+            [이미지 순서 및 역할]
+            * 1번째 이미지 (Reference): 완벽하게 깨끗한 정상(rgb_NONE) 배터리의 표본입니다.
+            * 2번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_insufficient_projection_sampling)의 표본입니다.
+            * 3번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_cell_alignment_failure)의 표본입니다.
+            * 4번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_beam_hardening_metal_streak)의 표본입니다.
+            * 5번째 이미지 (Reference): 표면에 먼지/얼룩이 묻은 불량(ct_acquisition_motion)의 표본입니다.
+
+            * 6번째 이미지 (Target): 당신이 분석해야 할 대상 이미지입니다. (ID: {target_id})
+
+            [지시사항]
+            1, 2,3,4,5번째 레퍼런스 이미지와 6번째 타겟 이미지를 시각적으로 꼼꼼히 비교하십시오. 
+            타겟 이미지가 어떤 결함에 해당하는지 판별하세요.
 
             [분석 대상 안내]
             분석 대상 ID: {target_id}
