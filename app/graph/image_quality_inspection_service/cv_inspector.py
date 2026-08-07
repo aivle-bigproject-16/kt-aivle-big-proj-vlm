@@ -49,7 +49,7 @@ def check_physical_quality(
             noise_level = float(np.mean(noise_residual))
 
             if noise_level > noise_threshold:
-                return "ct_low_signal_noise", f"평균 노이즈 수치({mean_brightness:.1f}) 초과로 화질 저하."
+                return "ct_low_signal_noise", f"평균 노이즈 수치({noise_level:.1f}) 초과로 화질 저하."
 
         return None, "OpenCV 사전 검사 통과"
     except Exception as e:
