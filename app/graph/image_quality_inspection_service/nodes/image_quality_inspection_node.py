@@ -46,6 +46,8 @@ async def image_quality_inspection_node(state: QualityState):
         image_url = img["imageUrl"]
 
         if image_type == "CT":
+            image_url = image_url + [".app/data/ct_NONE.jpg", ".app/data/ct_insufficient_projection_sampling.jpg", ".app/data/ct_cell_alignment_failure.jpg", ".app/data/ct_beam_hardening_metal_streak.jpg", ".app/data/ct_acquisition_motion.jpg"]
+            
             system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
             user_msg = f"""
