@@ -48,7 +48,7 @@ async def image_quality_inspection_node(state: QualityState):
         if image_type == "CT":
             image_url = ["./app/data/ct_NONE.jpg", "./app/data/ct_insufficient_projection_sampling.jpg",
                          "./app/data/ct_cell_alignment_failure.jpg", "./app/data/ct_beam_hardening_metal_streak.jpg",
-                         "./app/data/ct_acquisition_motion.jpg"] + [image_url] 
+                         "./app/data/ct_acquisition_motion.jpg", image_url] 
 
             system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
@@ -85,6 +85,7 @@ async def image_quality_inspection_node(state: QualityState):
             ]
             """
         else:
+            image_url = [image_url]
             system_msg = "당신은 배터리 외관 표면 RGB 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
             user_msg = f"""
@@ -111,7 +112,7 @@ async def image_quality_inspection_node(state: QualityState):
             """
 
         # 해당 이미지만 단독으로 전송하여 추론 (주의력 분산 방지)
-        response_text = await invoke_qwen_hf(system_msg, user_msg, [image_url])
+        response_text = await invoke_qwen_hf(system_msg, user_msg, image_url)
         clean_response = re.sub(r'```json\n|```', '', response_text).strip()
 
         try:
