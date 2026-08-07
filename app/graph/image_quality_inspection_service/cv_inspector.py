@@ -21,7 +21,8 @@ def check_physical_quality(
     image_type: str = "RGB",
     blur_threshold: float = 18.0, 
     under_threshold: float = 70.0, 
-    over_threshold: float = 190.0
+    over_threshold: float = 190.0,
+    noise_threshold: float = 4.0
 ) -> tuple[str | None, str]:
     try:
         img = load_cv2_image(image_source)
@@ -40,6 +41,15 @@ def check_physical_quality(
                 return "rgb_underexposure", f"평균 밝기({mean_brightness:.1f}) 미달로 노출 부족."
             elif mean_brightness > over_threshold:
                 return "rgb_overexposure", f"평균 밝기({mean_brightness:.1f}) 초과로 노출 과다."
+        elif image_type == "CT":
+            h, w = gray.shape[:2]
+            roi = gray[int(h*0.3):int(h*0.7), int(w*0.4):int(w*0.6)]
+            blurred = cv2.GaussianBlur(roi, (5, 5), 0)
+            noise_residual = cv2.absdiff(roi, blurred)
+            noise_level = float(np.mean(noise_residual))
+
+            if noise_level > noise_threshold:
+                return "ct_low_signal_noise", f"평균 노이즈 수치({mean_brightness:.1f}) 초과로 화질 저하."
 
         return None, "OpenCV 사전 검사 통과"
     except Exception as e:

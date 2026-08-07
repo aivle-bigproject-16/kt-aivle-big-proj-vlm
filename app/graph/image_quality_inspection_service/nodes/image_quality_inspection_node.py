@@ -58,11 +58,10 @@ async def image_quality_inspection_node(state: QualityState):
             
             [판별 기준: CT 촬영 실패 케이스 및 핵심 관찰 포인트]
             1. ct_NONE: 아래 결함이 전혀 없는 매끄럽고 선명한 정상 CT 영상
-            2. ct_low_signal_noise: [키워드: 입자성 노이즈, 대비 저하] 화면 전체에 모래알 같은 자글자글한 픽셀 노이즈가 끼어 있어 내부 구조가 선명하지 않음.
-            3. ct_acquisition_motion: [키워드: 이중 윤곽선, 방향성 흐림] 배터리의 테두리나 내부 층상 구조가 특정 방향으로 흔들려 두 겹(Ghosting)으로 보임.
-            4. ct_insufficient_projection_sampling: [키워드: 알리어싱, 재구성 손실] 외곽선이 계단처럼 깨져 보이며, 구조 주변으로 얕은 줄무늬(Streak)가 전체적으로 발생함.
-            5. ct_beam_hardening_metal_streak: [키워드: Cupping 왜곡, 강한 방사형 선] 특정 고밀도 영역을 중심으로 명암이 둥글게 왜곡되며, 밝고 어두운 강렬한 선들이 뻗어나감.
-            6. ct_cell_alignment_failure: [키워드: 인위적 직선 잘림] 배터리 본체가 이미지 경계 밖으로 벗어나 테두리가 날카로운 일직선으로 잘려나감. (화면에 꽉 찬 둥근 테두리는 정상임)
+            2. ct_acquisition_motion: [키워드: 이중 윤곽선, 방향성 흐림] 배터리의 테두리나 내부 층상 구조가 특정 방향으로 흔들려 두 겹(Ghosting)으로 보임.
+            3. ct_insufficient_projection_sampling: [키워드: 알리어싱, 재구성 손실] 외곽선이 계단처럼 깨져 보이며, 구조 주변으로 얕은 줄무늬(Streak)가 전체적으로 발생함.
+            4. ct_beam_hardening_metal_streak: [키워드: Cupping 왜곡, 강한 방사형 선] 특정 고밀도 영역을 중심으로 명암이 둥글게 왜곡되며, 밝고 어두운 강렬한 선들이 뻗어나감.
+            5. ct_cell_alignment_failure: [키워드: 인위적 직선 잘림] 배터리 본체가 이미지 경계 밖으로 벗어나 테두리가 날카로운 일직선으로 잘려나감. (화면에 꽉 찬 둥근 테두리는 정상임)
 
             [출력 JSON 형식]
             반드시 아래와 같은 형태의 단일 JSON 객체를 포함하는 배열을 출력하세요.
@@ -84,7 +83,7 @@ async def image_quality_inspection_node(state: QualityState):
             [판별 기준: RGB 촬영 실패 케이스 및 핵심 관찰 포인트]
             1. rgb_NONE: 아래 결함이 전혀 없는 매끄럽고 선명한 정상 RGB 영상
             2. rgb_trigger_timing_failure: [키워드: 프레임 잘림] 배터리의 상/하 캡이나 몸통이 화면 밖으로 크게 잘려나감.
-            3. rgb_uneven_lighting: [키워드: 명암 그라데이션] 화면 한쪽은 과도하게 밝고 반대쪽은 캄캄한 심한 조명 불균형이 있음.
+            3. rgb_uneven_lighting: [키워드: 명암 그라데이션] 화면 좌우 혹은 위아래 한쪽은 과도하게 밝고 반대쪽은 캄캄한 심한 조명 불균형이 있음.
             4. rgb_reflection_glare: [키워드: 하얀 빛기둥, 번짐] 표면에 굵고 길다란 하얀색 정반사 빛기둥(Core)과 빛 번짐(Bloom)이 발생해 표면을 가림.
             5. rgb_surface_dust: [키워드: 둥근 반점 얼룩] 초점이 흐린 원형 또는 타원형의 짙은 반점, 먼지 그림자가 묻어 있음.
             6. rgb_hair_contamination: [키워드: 가늘고 굽은 선] 화면을 뱀처럼 가로지르는 가늘고 구부러진 실오라기 같은 선형 그림자가 존재함.
