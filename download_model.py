@@ -9,7 +9,7 @@ from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
 
 load_dotenv()
 
-MODEL_ID = "Qwen/Qwen2-VL-2B-Instruct"
+MODEL_ID = "Qwen/Qwen3-VL-4B-Instruct"
 
 
 def authenticate():
