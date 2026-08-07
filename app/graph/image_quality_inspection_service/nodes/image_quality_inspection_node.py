@@ -47,15 +47,17 @@ async def image_quality_inspection_node(state: QualityState):
 
         if image_type == "CT":
             system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
+
             user_msg = f"""
             제공된 이미지는 배터리 셀의 내부 CT 촬영 영상입니다.
             분석 대상 이미지를 분석하여, 가장 유력한 이미지 화질 불량 원인 하나만 판별하세요.
+            주의: 배터리가 화면에 꽉 차게 찍힌 정상적인 상태를 '잘림'으로 오인하지 마십시오.
 
             [분석 대상 안내]
             분석 대상 ID: {target_id}
             
             [판별 기준: CT 촬영 실패 케이스]
-            * ct_cell_alignment_failure: 배터리 일부가 촬영 영역 밖으로 벗어나 외곽과 내부 구조 일부가 잘림.
+            * ct_cell_alignment_failure: 배터리 본체의 주요 영역이 화면 밖으로 완전히 벗어나 검사가 불가능할 정도로 크게 잘려나간 상태.
             * ct_low_signal_noise: 입자성 Poisson noise가 증가하고, 대비와 미세 구조 식별력이 저하됨.
             * ct_acquisition_motion: 구조 경계의 방향성 흐림, 동일 구조가 이동 방향으로 이중으로 보이는 ghosting.
             * ct_insufficient_projection_sampling: 구조 주변 streak, 방향성 aliasing, 경계·세부 구조의 재구성 손실.
@@ -70,15 +72,17 @@ async def image_quality_inspection_node(state: QualityState):
             """
         else:
             system_msg = "당신은 배터리 외관 표면 RGB 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
+
             user_msg = f"""
             제공된 이미지는 배터리 셀의 외부 표면을 촬영한 RGB 영상입니다.
             분석 대상 이미지를 분석하여, 가장 유력한 이미지 화질 불량 원인 하나만 판별하세요.
+            주의: 배터리가 화면에 꽉 차게 찍힌 정상적인 상태를 '잘림'으로 오인하지 마십시오.
 
             [분석 대상 안내]
             분석 대상 ID: {target_id}
 
             [판별 기준: RGB 촬영 실패 케이스]
-            * rgb_trigger_timing_failure: 배터리 앞부분 또는 뒷부분이 잘린 이미지.
+            * rgb_trigger_timing_failure: 배터리의 상단이나 하단 캡 부분이 화면 밖으로 아예 잘려나가서 전체 형태가 온전하지 않은 심각한 상태.
             * rgb_uneven_lighting: 한쪽은 밝고 다른 쪽은 어두운 불균일한 이미지.
             * rgb_reflection_glare: 흰 반사광이 표면 scratch 및 오염 부위를 덮음.
             * rgb_surface_dust: 표면에 작은 점, 얼룩, 입자 오염.
