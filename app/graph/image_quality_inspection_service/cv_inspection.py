@@ -41,6 +41,7 @@ def check_physical_quality(
                 return "rgb_underexposure", f"평균 밝기({mean_brightness:.1f}) 미달로 노출 부족."
             elif mean_brightness > over_threshold:
                 return "rgb_overexposure", f"평균 밝기({mean_brightness:.1f}) 초과로 노출 과다."
+            
         elif image_type == "CT":
             h, w = gray.shape[:2]
             roi = gray[int(h*0.3):int(h*0.7), int(w*0.4):int(w*0.6)]
@@ -50,6 +51,26 @@ def check_physical_quality(
 
             if noise_level > noise_threshold:
                 return "ct_low_signal_noise", f"평균 노이즈 수치({noise_level:.1f}) 초과로 화질 저하."
+    
+            col_max = np.max(gray, axis=0)
+    
+            brightest_col_val = float(np.max(col_max))
+            darkest_col_val = float(np.min(col_max))
+            dynamic_threshold = darkest_col_val + (brightest_col_val - darkest_col_val) * 0.5
+            battery_cols = np.where(col_max > dynamic_threshold)[0]
+            if len(battery_cols) == 0:
+                return "error", f"배터리 객체를 찾을 수 없습니다. (디버그 - 최고밝기:{brightest_col_val}, 최저밝기:{darkest_col_val})"
+
+            bx = battery_cols[0]
+            bw = battery_cols[-1] - bx
+            by, bh = 0, h  
+            
+            margin = 5
+            if bx <= margin or (bx + bw) >= (w - margin):
+                return "ct_cell_alignment_failure", f"배터리 좌우가 화면 경계에 닿음. (X 시작: {bx}, 끝: {bx+bw})"
+
+            battery_roi = gray[by:by+bh, bx:bx+bw]
+            roi_h, roi_w = battery_roi.shape
 
         return None, "OpenCV 사전 검사 통과"
     except Exception as e:
