@@ -2,7 +2,7 @@ import asyncio
 import time
 import torch
 import os
-from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 from qwen_vl_utils import process_vision_info
 
 hf_model = None
@@ -16,7 +16,7 @@ def load_model(model_id: str = MODEL_ID) -> None:
     global hf_model, hf_processor
     
     # 모델 로드
-    hf_model = Qwen2VLForConditionalGeneration.from_pretrained(
+    hf_model = Qwen3VLForConditionalGeneration.from_pretrained(
         model_id,
         torch_dtype=torch.bfloat16,
         device_map="auto",
