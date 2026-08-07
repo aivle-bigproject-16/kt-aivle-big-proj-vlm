@@ -56,7 +56,7 @@ def verify(model, tokenizer):
     text = tokenizer.apply_chat_template(
         messages, tokenize=False, add_generation_prompt=True
     )
-    inputs = tokenizer(text, return_tensors="pt").to("cuda")
+    inputs = tokenizer(text=text, return_tensors="pt").to("cuda")
 
     with torch.no_grad():
         output_ids = model.generate(**inputs, max_new_tokens=32, do_sample=False)
