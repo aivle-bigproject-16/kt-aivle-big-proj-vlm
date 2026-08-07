@@ -46,12 +46,14 @@ async def image_quality_inspection_node(state: QualityState):
         image_url = img["imageUrl"]
 
         if image_type == "CT":
-            image_url = [".app/data/ct_NONE.jpg", ".app/data/ct_insufficient_projection_sampling.jpg", ".app/data/ct_cell_alignment_failure.jpg", ".app/data/ct_beam_hardening_metal_streak.jpg", ".app/data/ct_acquisition_motion.jpg"] + [image_url] 
+            image_url = ["./app/data/ct_NONE.jpg", "./app/data/ct_insufficient_projection_sampling.jpg",
+                         "./app/data/ct_cell_alignment_failure.jpg", "./app/data/ct_beam_hardening_metal_streak.jpg",
+                         "./app/data/ct_acquisition_motion.jpg"] + [image_url] 
 
             system_msg = "당신은 배터리 내부 구조 CT 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
             user_msg = f"""
-            제공된 3장의 이미지를 순서대로 비교 분석하세요.
+            제공된 6장의 이미지를 순서대로 비교 분석하세요.
             
             [이미지 순서 및 역할]
             * 1번째 이미지 (Reference): 완벽하게 깨끗한 정상(rgb_NONE) 배터리의 표본입니다.
