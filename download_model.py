@@ -34,15 +34,15 @@ def download_model():
 
     model = Qwen2VLForConditionalGeneration.from_pretrained(
         MODEL_ID,
-        torch_dtype=torch.bfloat16,
+        dtype='auto',
         device_map="auto",
     )
     print("✅ 모델 로드 완료")
 
-    tokenizer = AutoProcessor.from_pretrained(MODEL_ID)
+    processor = AutoProcessor.from_pretrained(MODEL_ID)
     print("✅ 토크나이저 로드 완료")
 
-    return model, tokenizer
+    return model, processor
 
 
 def verify(model, tokenizer):
