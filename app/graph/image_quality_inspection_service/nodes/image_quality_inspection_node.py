@@ -55,11 +55,10 @@ async def image_quality_inspection_node(state: QualityState):
             분석 대상 ID: {target_id}
             
             [판별 기준: CT 촬영 실패 케이스]
-            * ct_low_signal_noise: 입자성 Poisson noise가 증가하고, 대비와 미세 구조 식별력이 저하됨.
-            * ct_acquisition_motion: 구조 경계의 방향성 흐림, 동일 구조가 이동 방향으로 이중으로 보이는 ghosting.
-            * ct_insufficient_projection_sampling: 구조 주변 streak, 방향성 aliasing, 경계·세부 구조의 재구성 손실.
-            * ct_beam_hardening_metal_streak: 고밀도 영역 주변 cupping·명암 왜곡과 방사형 밝고 어두운 streak.
-            * ct_NONE: 위 결함이 없는 정상적인 CT 영상.
+            1. ct_NONE: 아래 결함이 전혀 없는 매끄럽고 선명한 정상 CT 영상
+            2. ct_acquisition_motion: [키워드: 이중 윤곽선, 방향성 흐림] 배터리의 테두리나 내부 층상 구조가 특정 방향으로 흔들려 두 겹(Ghosting)으로 보임.
+            3. ct_insufficient_projection_sampling: [키워드: 알리어싱, 재구성 손실] 외곽선이 계단처럼 깨져 보이며, 구조 주변으로 얕은 줄무늬(Streak)가 전체적으로 발생함.
+            4. ct_beam_hardening_metal_streak: [키워드: Cupping 왜곡, 강한 방사형 선] 특정 고밀도 영역을 중심으로 명암이 둥글게 왜곡되며, 밝고 어두운 강렬한 선들이 뻗어나감.
 
             [출력 JSON 형식]
             반드시 아래와 같은 형태의 단일 JSON 객체를 포함하는 배열을 출력하세요.
