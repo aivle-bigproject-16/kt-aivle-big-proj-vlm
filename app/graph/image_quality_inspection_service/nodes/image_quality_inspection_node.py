@@ -57,11 +57,11 @@ async def image_quality_inspection_node(state: QualityState):
             분석 대상 ID: {target_id}
             
             [판별 기준: CT 촬영 실패 케이스]
-            * ct_cell_alignment_failure: 배터리 본체의 주요 영역이 화면 밖으로 완전히 벗어나 검사가 불가능할 정도로 크게 잘려나간 상태.
             * ct_low_signal_noise: 입자성 Poisson noise가 증가하고, 대비와 미세 구조 식별력이 저하됨.
             * ct_acquisition_motion: 구조 경계의 방향성 흐림, 동일 구조가 이동 방향으로 이중으로 보이는 ghosting.
             * ct_insufficient_projection_sampling: 구조 주변 streak, 방향성 aliasing, 경계·세부 구조의 재구성 손실.
             * ct_beam_hardening_metal_streak: 고밀도 영역 주변 cupping·명암 왜곡과 방사형 밝고 어두운 streak.
+            * ct_cell_alignment_failure: 배터리 본체의 주요 영역이 화면 밖으로 완전히 벗어나 검사가 불가능할 정도로 크게 잘려나간 상태.
             * ct_NONE: 위 결함이 없는 정상적인 CT 영상.
 
             [출력 JSON 형식]
@@ -82,11 +82,11 @@ async def image_quality_inspection_node(state: QualityState):
             분석 대상 ID: {target_id}
 
             [판별 기준: RGB 촬영 실패 케이스]
-            * rgb_trigger_timing_failure: 배터리의 상단이나 하단 캡 부분이 화면 밖으로 아예 잘려나가서 전체 형태가 온전하지 않은 심각한 상태.
             * rgb_uneven_lighting: 한쪽은 밝고 다른 쪽은 어두운 불균일한 이미지.
             * rgb_reflection_glare: 흰 반사광이 표면 scratch 및 오염 부위를 덮음.
             * rgb_surface_dust: 표면에 작은 점, 얼룩, 입자 오염.
             * rgb_hair_contamination: 길고 얇은 검정 또는 갈색 곡선이 표면을 가림.
+            * rgb_trigger_timing_failure: 배터리의 상단이나 하단 캡 부분이 화면 밖으로 아예 잘려나가서 전체 형태가 온전하지 않은 심각한 상태.
             * rgb_NONE: 위 결함이 없는 정상적인 RGB 영상.
 
             [출력 형식]
