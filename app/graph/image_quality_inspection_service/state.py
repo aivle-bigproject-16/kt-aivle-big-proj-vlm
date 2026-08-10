@@ -8,4 +8,4 @@ class QualityState(TypedDict):
     imageType: Optional[str]
     images: List[Images]
 
-    inspection_result: Optional[str]
+    inspection_result: List[Dict[str, Any]]
