@@ -58,8 +58,6 @@ def check_physical_quality(
             darkest_col_val = float(np.min(col_max))
             dynamic_threshold = darkest_col_val + (brightest_col_val - darkest_col_val) * 0.5
             battery_cols = np.where(col_max > dynamic_threshold)[0]
-            if len(battery_cols) == 0:
-                return "error", f"배터리 객체를 찾을 수 없습니다. (디버그 - 최고밝기:{brightest_col_val}, 최저밝기:{darkest_col_val})"
 
             bx = battery_cols[0]
             bw = battery_cols[-1] - bx
