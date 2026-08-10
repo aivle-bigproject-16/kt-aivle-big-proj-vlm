@@ -68,7 +68,6 @@ async def image_quality_inspection_node(state: QualityState):
             """
 
         elif image_type == "RGB":
-            image_url = [image_url]
             system_msg = "당신은 배터리 외관 표면 RGB 검사 영상의 무결성을 판독하는 AI 품질 엔지니어입니다. 반드시 지정된 JSON 형식으로만 응답하세요."
 
             user_msg = f"""
