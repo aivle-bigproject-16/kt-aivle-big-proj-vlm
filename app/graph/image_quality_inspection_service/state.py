@@ -1,4 +1,5 @@
-from typing import TypedDict, List, Optional
+from typing import TypedDict, List, Dict, Any, Optional, Annotated
+import operator
 
 class Images(TypedDict):
     imageId: str
@@ -7,5 +8,6 @@ class Images(TypedDict):
 class QualityState(TypedDict):
     imageType: Optional[str]
     images: List[Images]
+    vlm_target_images: List[Images] 
     
-    inspection_result: Optional[List[dict]]
+    inspection_result: Annotated[List[Dict[str, Any]], operator.add]
