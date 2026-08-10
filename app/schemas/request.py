@@ -44,7 +44,7 @@ class Images(BaseModel):
 class QualityState(BaseModel):
     imageType: Optional[str]
     images: List[Images]
-
+    vlm_target_images: List[Images]
     inspection_result: Optional[dict] = None
 
 # ── Mockup ────────────────────────────────────────────────
