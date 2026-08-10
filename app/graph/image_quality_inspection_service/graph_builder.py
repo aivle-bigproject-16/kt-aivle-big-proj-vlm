@@ -18,7 +18,7 @@ def image_quality_inspection_graph():
     # 엣지 연결 (순차 실행: QA 검증 -> 외관 점검)
     workflow.add_edge(START, "cv_inspection_node")
     workflow.add_conditional_edges(
-        "cv_node", 
+        "cv_inspection_node", 
         route_to_vlm,
         {"image_quality_inspection_node": "image_quality_inspection_node", "END": END},
     )
