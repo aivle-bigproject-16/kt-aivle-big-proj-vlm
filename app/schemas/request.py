@@ -81,5 +81,6 @@ MOCK_IMAGE_QUALITY = QualityState(
     imageType="RGB",
     images=[
         Images(imageId="TARGET_RGB_01", imageUrl="./app/data/rgb_focus_failure.jpg")
-    ]
+    ],
+    vlm_target_images =[]
 )
