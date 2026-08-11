@@ -21,8 +21,10 @@ boto3
 # Environment
 python-dotenv
 
-# Vector DB & Image Processing (추가된 부분)
-chromadb
+#Image Inspection
 pillow
 requests
 qwen_vl_utils
+numpy
+opencv-python-headless
+aiohttp
