@@ -1,0 +1,31 @@
+# 1. Git 및 형상관리 관련
+.git/
+.gitignore
+
+# 2. 파이썬 가상환경 및 캐시 파일
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# 3. 환경 변수 및 보안 (매우 중요)
+.env
+.env.*
+
+# 4. 개발/테스트 전용 파일 및 문서
+tests/
+docs/
+k8s/
+*.ipynb
+server.log
+
+# 5. 빌드 결과물 및 에디터/OS 임시 파일
+dist/
+build/
+*.egg-info/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
