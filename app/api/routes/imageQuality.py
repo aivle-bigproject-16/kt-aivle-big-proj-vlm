@@ -3,11 +3,11 @@ from app.schemas.request import QualityState, MOCK_IMAGE_QUALITY
 from app.schemas.response import ImageResponse
 from app.services import image_quality_service as image
 
-router = APIRouter(prefix="/reports", tags=["reports"])
+router = APIRouter(prefix="", tags=["qualityInspection"])
 
 
 @router.post(
-    "/imageQuality",
+    "/qualityInspection",
     response_model=ImageResponse,
     openapi_extra={
         "requestBody": {

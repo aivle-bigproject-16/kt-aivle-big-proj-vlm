@@ -19,4 +19,4 @@ app = FastAPI(
 app.include_router(health.router)
 app.include_router(reports.router, prefix="/vlm")
 app.include_router(individual_reports.router, prefix="/vlm")
-app.include_router(imageQuality.router, prefix="/imageQuality")
+app.include_router(imageQuality.router, prefix="/vlm")
