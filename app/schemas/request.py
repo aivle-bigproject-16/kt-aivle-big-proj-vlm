@@ -44,7 +44,7 @@ class Images(BaseModel):
 class QualityState(BaseModel):
     imageType: Optional[str]
     images: List[Images]
-    vlm_target_images: List[Images]
+    vlm_target_images: Optional[List[Images]] = None
     inspection_result: Optional[dict] = None
 
 # ── Mockup ────────────────────────────────────────────────
@@ -81,6 +81,5 @@ MOCK_IMAGE_QUALITY = QualityState(
     imageType="RGB",
     images=[
         Images(imageId="TARGET_RGB_01", imageUrl="./app/data/rgb_focus_failure.jpg")
-    ],
-    vlm_target_images =[]
+    ]
 )

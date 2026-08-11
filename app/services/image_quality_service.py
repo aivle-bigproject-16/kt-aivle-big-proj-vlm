@@ -6,8 +6,7 @@ from app.graph.image_quality_inspection_service.graph_builder import image_inspe
 async def generate_image_inspection(req: QualityState) -> ImageResponse:
     initial_state = {
         "imageType":req.imageType,
-        "images":req.model_dump()["images"],
-        "vlm_target_images": []
+        "images":req.model_dump()["images"]
     }
 
     try:
