@@ -1,4 +1,4 @@
-from app.graph.image_quality_inspection_service.cv_inspector import check_physical_quality
+from app.graph.image_quality_inspection_service.cv_inspection import check_physical_quality
 from app.graph.image_quality_inspection_service.state import QualityState
 
 # 1. CV 검사 노드 (cv_inspection_node)
