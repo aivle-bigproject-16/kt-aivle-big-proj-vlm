@@ -1,0 +1,29 @@
+# 빌드 컨텍스트에서 뺄 것.
+# Dockerfile 이 COPY 하지 않는 파일도 컨텍스트로 먼저 전송된다. 빼두지 않으면
+# 매 빌드마다 가상환경과 노트북까지 데몬으로 올라간다.
+
+.git
+.gitignore
+.venv/
+.vscode/
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 시크릿. 이미지에 절대 들어가면 안 된다.
+.env
+.env.*
+
+# 배포에 쓰지 않는 것
+tests/
+docs/
+k8s/
+colab_run.ipynb
+run_report.py
+README.md
+ARCHITECTURE.md
+
+.DS_Store
+Thumbs.db

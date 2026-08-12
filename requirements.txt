@@ -1,22 +1,35 @@
-fastapi
-uvicorn[standard]
-pydantic-settings
-httpx
+# 버전을 고정한다. 이전에는 transformers 를 git main 에서 받고 나머지를 열어 둬서,
+# 이미지를 다시 구울 때마다 다른 조합이 들어갔다. GPU 이미지는 빌드가 오래 걸려
+# 어느 조합에서 깨졌는지 되짚기 어렵다.
+#
+# torch 는 여기에 없다. 베이스 이미지(pytorch/pytorch:2.11.0-cuda12.8-cudnn9-runtime)가
+# CUDA 와 짝이 맞는 빌드를 이미 갖고 있다. 여기서 다시 설치하면 베이스의 것을 덮어쓰고
+# CUDA 버전이 어긋난다. ai-infer 의 requirements/gpu-onnx.txt 도 같은 규칙이다.
+# 종전 주석의 cu124 는 개발자 로컬(RTX 40)을 기준으로 적힌 것이고 배포 GPU 와 다르다.
+#
+# transformers 는 ai-infer 와 같은 5.14.1 로 맞춘다. 두 서비스가 같은 호스트에서 돌아
+# 버전이 갈리면 문제를 재현할 때 변수가 하나 늘어난다.
+# 이 레포가 쓰는 심볼 세 개가 5.14.1 에 있는 것을 확인했다 —
+# AutoModelForMultimodalLM · AutoProcessor · BitsAndBytesConfig.
+# Qwen3.5-2B 는 아키텍처가 Qwen3_5ForConditionalGeneration 이라 AutoModelForCausalLM
+# 으로는 적재되지 않는다. 하한을 내리려면 그 심볼부터 다시 확인한다.
 
-# VLM inference (CUDA 12.4 — RTX 40 series)
---extra-index-url https://download.pytorch.org/whl/cu124
-torch
-torchvision
-accelerate
-bitsandbytes
-transformers @ git+https://github.com/huggingface/transformers
+fastapi==0.141.1
+uvicorn[standard]==0.52.1
+pydantic-settings==2.15.0
+httpx==0.28.1
+
+# 생성 모델
+accelerate==1.14.0
+bitsandbytes==0.50.0
+transformers==5.14.1
 
 # LangGraph
-langgraph
-langchain-core
+langgraph==1.2.11
+langchain-core==1.5.4
 
 # Storage / callback
-boto3
+boto3==1.43.69
 
 # Environment
-python-dotenv
+python-dotenv==1.2.2
