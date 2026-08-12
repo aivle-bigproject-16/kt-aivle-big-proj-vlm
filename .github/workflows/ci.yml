@@ -24,12 +24,12 @@ jobs:
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-asyncio httpx
-          
+
       - name: Run Pytest (Health & Schema Contract)
         env:
           # Pydantic Settings가 .env 없이도 통과하도록 임시 더미 변수 주입
-          ENVIRONMENT: "testing"
           HF_TOKEN: "dummy_ci_token_for_test"
-          S3_BUCKET_NAME: "dummy-bucket"
+          MODEL_ID: "dummy-model-id"
         run: |
           pytest tests/test_api.py -v
+          pytest tests/test_graph.py -v
