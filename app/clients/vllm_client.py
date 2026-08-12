@@ -62,8 +62,6 @@ async def invoke_qwen_hf(
 
     # 3. 비전 데이터 전처리 (이미지 파일들을 텐서로 바꿀 준비)
     image_inputs, video_inputs = process_vision_info(messages)
-
-    device = "cuda" if torch.cuda.is_available() else "cpu"
     
     # 4. Processor를 통해 최종 입력 텐서 생성 (텍스트 + 이미지)
     inputs = hf_processor(
@@ -72,7 +70,7 @@ async def invoke_qwen_hf(
         videos=video_inputs,
         padding=True,
         return_tensors="pt"
-    ).to(device)
+    ).to("cuda")
 
     def generate():
         return hf_model.generate(

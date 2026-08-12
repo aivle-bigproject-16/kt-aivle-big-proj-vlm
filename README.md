@@ -1,5 +1,5 @@
-# kt-aivle-big-proj-llm-report
-KT AIVLE 빅프로젝트 16조 — LLM 리포트 서버(LangGraph + Qwen)
+# kt-aivle-big-proj-vlm-report
+KT AIVLE 빅프로젝트 16조 — vLM 서버(LangGraph + Qwen)
 
 develop과는 다르게 test 브랜치는 현재 Qwen3-VL-4B-Instruct 사용 중. 모델 설치, 호출 부분 차이.
 

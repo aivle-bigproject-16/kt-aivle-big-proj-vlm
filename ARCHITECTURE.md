@@ -132,6 +132,34 @@ START
 5. 제조사 순위 (count 내림차순)
 6. 날조 금지 (원본에 없는 데이터 생성 여부)
 
+## LangGraph — Image Quality Inspection service
+
+### State
+```python
+class QualityState(TypedDict):
+    imageType: Optional[str]
+    images: List[Images]
+    vlm_target_images: List[Images] 
+    
+    inspection_result: Annotated[List[Dict[str, Any]], operator.add]
+```
+
+### 그래프 흐름
+```text
+[START]
+  └──> 물리적 화질 검사 (cv_inspection_node: OpenCV 기반 블러, 밝기, 노이즈 확인)
+         ├──> [불합격] ────> [END] (CV 에러 반환)
+         └──> [합격] ──────> VLM 심층 검사 (image_quality_inspection_node: Qwen으로 시각 결함 판별)
+                               └──> [END]
+```
+
+### 노드별 역할
+
+| 노드 | 파일 | 역할 |
+|---|---|---|
+| `cv_inspection_node` | `nodes/cv_inspection_node.py` | 일차적 규칙 기반 분석 결과|
+| `image_quality_inspection_node` | `nodes/image_quality_inspection_node.py` | VLM을 통한 이미지 분석 결과 |
+
 ---
 
 ## 환경 변수 (.env)
@@ -151,6 +179,7 @@ START
 | 그래프 | langgraph, langchain-core |
 | 스토리지 | boto3 |
 | 환경 관리 | python-dotenv |
+|openCV 추론| pillow, requests, numpy, opencv-python-headless, aiohttp|
 
 ---
 

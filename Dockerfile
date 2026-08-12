@@ -28,6 +28,9 @@ COPY . .
 # 7. 포트 노출 (Colab 테스트 환경의 7860 포트 또는 FastAPI 기본 8000 포트)
 EXPOSE 7860
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:7860/health || exit 1
+
 # 8. 컨테이너 실행 시 FastAPI 서버 구동
 # 필요에 따라 포트 번호를 8000 등으로 수정할 수 있습니다.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
