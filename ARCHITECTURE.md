@@ -32,10 +32,6 @@ kt-aivle-big-proj-vlm/
 │   │   ├── config.py                  # 중앙 집중식 환경 설정 (Pydantic Settings)
 │   │   └── logging.py
 │   │
-│   ├── queue/
-│   │   ├── job_queue.py               # asyncio.Queue 래퍼
-│   │   └── worker.py                  # worker_loop()
-│   │
 │   ├── graph/                         # LangGraph 오케스트레이션
 │   │   ├── daily_report_service/      # 일일 보고서 그래프
 │   │   ├── individual_report_service/ # 개별 보고서 그래프
@@ -43,8 +39,7 @@ kt-aivle-big-proj-vlm/
 │   │
 │   ├── clients/
 │   │   ├── vllm_client.py             # HuggingFace 모델 로드 + 추론
-│   │   ├── storage_client.py          # AWS S3 스토리지 연동
-│   │   └── backend_client.py          # 완료 후 백엔드 콜백 POST
+│   │   └── storage_client.py          # AWS S3 스토리지 연동
 │   │
 │   ├── schemas/
 │   │   ├── request.py                 # API 요청 Pydantic 모델
@@ -58,11 +53,6 @@ kt-aivle-big-proj-vlm/
 ├── tests/
 │   ├── test_graph.py
 │   └── test_api.py
-│
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── configmap.yaml
 │
 ├── download_model.py                  # 모델 초기 다운로드 및 검증
 ├── requirements.txt                   # 하드코딩된 패키지 버전 고정 파일
