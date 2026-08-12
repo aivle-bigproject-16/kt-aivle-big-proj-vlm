@@ -1,0 +1,35 @@
+name: API Schema & Health CI
+
+on:
+  push:
+    branches: [ "main", "test" ]
+  pull_request:
+    branches: [ "main", "test" ]
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: 'pip' # 패키지 설치 속도 최적화
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx
+          
+      - name: Run Pytest (Health & Schema Contract)
+        env:
+          # Pydantic Settings가 .env 없이도 통과하도록 임시 더미 변수 주입
+          ENVIRONMENT: "testing"
+          HF_TOKEN: "dummy_ci_token_for_test"
+          S3_BUCKET_NAME: "dummy-bucket"
+        run: |
+          pytest tests/test_api.py -v

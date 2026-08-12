@@ -4,15 +4,15 @@ import torch
 import os
 from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
 from qwen_vl_utils import process_vision_info
+from app.core.config import settings
 
 hf_model = None
 hf_processor = None
 
 # 🚨 주의: 이미지를 처리하려면 텍스트 전용(Qwen3.5)이 아닌 VL 모델을 사용해야 합니다.
 # 사양에 맞춰 "Qwen/Qwen2-VL-2B-Instruct" 또는 "Qwen/Qwen2.5-VL-3B-Instruct" 등을 사용하세요.
-MODEL_ID = "Qwen/Qwen3-VL-4B-Instruct"
 
-def load_model(model_id: str = MODEL_ID) -> None:
+def load_model(model_id: str = settings.MODEL_ID) -> None:
     global hf_model, hf_processor
     
     # 모델 로드

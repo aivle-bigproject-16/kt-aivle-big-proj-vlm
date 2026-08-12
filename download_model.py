@@ -6,18 +6,16 @@ import torch
 from dotenv import load_dotenv
 from huggingface_hub import get_token, login
 from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+from app.core.config import settings
 
 load_dotenv()
-
-MODEL_ID = "Qwen/Qwen3-VL-4B-Instruct"
-
 
 def authenticate():
     if get_token() is not None:
         print("✅ 저장된 토큰으로 자동 로그인")
         return
 
-    env_token = os.getenv("HF_TOKEN")
+    env_token = os.getenv(settings.HF_TOKEN)
     if env_token:
         login(token=env_token)
         print("✅ .env 토큰으로 로그인 완료")
@@ -29,17 +27,17 @@ def authenticate():
 
 
 def download_model():
-    print(f"\n📦 모델 다운로드 시작: {MODEL_ID}")
+    print(f"\n📦 모델 다운로드 시작: {settings.MODEL_ID}")
     print("   (첫 실행 시 수 GB 다운로드 — 시간이 걸릴 수 있습니다)\n")
 
     model = Qwen3VLForConditionalGeneration.from_pretrained(
-        MODEL_ID,
+        settings.MODEL_ID,
         dtype='auto',
         device_map="auto",
     )
     print("✅ 모델 로드 완료")
 
-    processor = AutoProcessor.from_pretrained(MODEL_ID)
+    processor = AutoProcessor.from_pretrained(settings.MODEL_ID)
     print("✅ 토크나이저 로드 완료")
 
     return model, processor

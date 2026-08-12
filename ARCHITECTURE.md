@@ -16,7 +16,7 @@
 
 ## 프로젝트 구조
 
-```
+```text
 kt-aivle-big-proj-vlm/
 │
 ├── app/
@@ -24,38 +24,36 @@ kt-aivle-big-proj-vlm/
 │   │
 │   ├── api/routes/
 │   │   ├── reports.py                 # POST /reports/{id}/generate
+│   │   ├── individual_reports.py      # POST /reports/individual
+│   │   ├── imageQuality.py            # POST /qualityInspection
 │   │   └── health.py                  # GET /health
 │   │
 │   ├── core/
-│   │   ├── config.py                  # 환경 설정 (Pydantic Settings)
+│   │   ├── config.py                  # 중앙 집중식 환경 설정 (Pydantic Settings)
 │   │   └── logging.py
 │   │
 │   ├── queue/
 │   │   ├── job_queue.py               # asyncio.Queue 래퍼
 │   │   └── worker.py                  # worker_loop()
 │   │
-│   ├── graph/
-│   │   ├── report_service/            # 일일 보고서 그래프
-│   │   │   ├── state.py               # ReportState (TypedDict)
-│   │   │   ├── edges.py               # route_after_critic()
-│   │   │   ├── graph_builder.py       # StateGraph 조립 + compile()
-│   │   │   └── nodes/
-│   │   │       ├── daily_report.py    # 보고서 생성 노드
-│   │   │       └── critic.py         # 검수 노드
-│   │   │
-│   │   └── error_service/             # 미구현 (예정)
+│   ├── graph/                         # LangGraph 오케스트레이션
+│   │   ├── daily_report_service/      # 일일 보고서 그래프
+│   │   ├── individual_report_service/ # 개별 보고서 그래프
+│   │   ├── image_quality_inspection_service/ # 이미지 품질(CV+VLM) 검사 그래프
 │   │
 │   ├── clients/
 │   │   ├── vllm_client.py             # HuggingFace 모델 로드 + 추론
-│   │   ├── storage_client.py          # S3 등 스토리지
+│   │   ├── storage_client.py          # AWS S3 스토리지 연동
 │   │   └── backend_client.py          # 완료 후 백엔드 콜백 POST
 │   │
 │   ├── schemas/
-│   │   ├── request.py
-│   │   └── response.py
+│   │   ├── request.py                 # API 요청 Pydantic 모델
+│   │   └── response.py                # API 응답 Pydantic 모델
 │   │
 │   └── services/
-│       └── report_service.py          # 큐 적재 + graph 오케스트레이션
+│       ├── daily_report_service.py
+│       ├── individual_report_service.py
+│       └── image_quality_service.py
 │
 ├── tests/
 │   ├── test_graph.py
@@ -67,9 +65,8 @@ kt-aivle-big-proj-vlm/
 │   └── configmap.yaml
 │
 ├── download_model.py                  # 모델 초기 다운로드 및 검증
-├── daily_report_graph.ipynb           # 그래프 독립 실행 버전 (개발/테스트용)
-├── requirements.txt
-├── Dockerfile
+├── requirements.txt                   # 하드코딩된 패키지 버전 고정 파일
+├── Dockerfile                         # 프로덕션 최적화 이미지 (Non-root, Healthcheck)
 ├── .env                               # 환경 변수 (gitignore)
 └── .env.example                       # 환경 변수 템플릿
 ```
