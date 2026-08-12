@@ -1,30 +1,30 @@
-fastapi
-uvicorn[standard]
-pydantic-settings
-httpx
+fastapi==0.141.1
+uvicorn[standard]==0.52.1
+pydantic-settings==2.14.2
+httpx==0.28.1
 
 # VLM inference (CUDA 12.4 — RTX 40 series)
 --extra-index-url https://download.pytorch.org/whl/cu124
-torch
-torchvision
-accelerate
-bitsandbytes
-transformers @ git+https://github.com/huggingface/transformers
+torch==2.13.0
+torchvision==0.28.0
+accelerate==1.14.0
+bitsandbytes==0.50.0
+transformers @ git+https://github.com/huggingface/transformers@bf017e36f130188837bfd97d153103e430924886
 
 # LangGraph
-langgraph
-langchain-core
+langgraph==1.2.10
+langchain-core==1.5.3
 
 # Storage / callback
-boto3
+boto3==1.43.65
 
 # Environment
-python-dotenv
+python-dotenv==1.2.2
 
 #Image Inspection
-pillow
-requests
-qwen_vl_utils
-numpy
-opencv-python-headless
-aiohttp
+pillow==12.3.0
+requests==2.34.2
+qwen-vl-utils==0.0.14
+numpy==2.5.1
+opencv-python-headless==5.0.0.93
+aiohttp==3.14.3
