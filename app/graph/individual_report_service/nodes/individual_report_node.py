@@ -1,13 +1,12 @@
 import json
 
-from app.clients.vllm_client import invoke_qwen_hf
 from app.graph.individual_report_service.state import ReportState
 
 
-async def individual_report_node(state: ReportState) -> dict:
-    data = state.get("individual_data") or {}
-    critic_issues = state.get("critic_issues") or []
-
+def build_individual_report_prompt(
+    data: dict, critic_issues: list[dict] | None = None
+) -> tuple[str, str, str]:
+    critic_issues = critic_issues or []
     system_msg = "당신은 배터리 셀 품질 검사 데이터를 분석하는 종합 통계 분석가입니다."
 
     # 데이터 추출 및 사전 집계
@@ -95,7 +94,17 @@ async def individual_report_node(state: ReportState) -> dict:
 {issues_text}
     """
 
-    # invoke_qwen_hf 함수는 기존에 정의된 것을 그대로 사용한다고 가정합니다.
+    return serial_no, system_msg, user_msg
+
+
+async def individual_report_node(state: ReportState) -> dict:
+    data = state.get("individual_data") or {}
+    critic_issues = state.get("critic_issues") or []
+    serial_no, system_msg, user_msg = build_individual_report_prompt(data, critic_issues)
+
+    # Keep model imports lazy so prompt-contract tests do not load GPU libraries.
+    from app.clients.vllm_client import invoke_qwen_hf
+
     response_text = await invoke_qwen_hf(
         system_msg=system_msg,
         prompt_text=user_msg,

@@ -1,5 +1,5 @@
-from typing import List
-from pydantic import BaseModel
+from typing import List, Optional
+from pydantic import BaseModel, ConfigDict
 
 
 class DefectCountSchema(BaseModel):
@@ -32,9 +32,17 @@ class DefectInfoSchema(BaseModel):
 
 
 class IndividualReportRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     cellSerialNo: str
-    inspectionId: int
+    inspectionId: Optional[int]
     totalImages: int
+    cellSize: Optional[List[float]]
+    pointGroups: List[List[float]]
+    # Contract questions are still open: ratio units/ranges (0-1 vs 0-100) and
+    # the pointGroups coordinate system. Keep these numeric shapes permissive.
+    ctVoidRatio: Optional[float]
+    rgbDefectRate: Optional[float]
     defectInfo: List[DefectInfoSchema]
 
 
@@ -43,6 +51,10 @@ MOCK_INDIVIDUAL_REPORT_REQUEST = IndividualReportRequest(
     cellSerialNo="CELL-A92B-2026",
     inspectionId=84210,
     totalImages=12,
+    cellSize=None,
+    pointGroups=[],
+    ctVoidRatio=None,
+    rgbDefectRate=None,
     defectInfo=[
         DefectInfoSchema(imageType="CT", defectType=["MICRO_DEFECT"]),
         DefectInfoSchema(imageType="RGB", defectType=["CRACK", "SPOT"]),

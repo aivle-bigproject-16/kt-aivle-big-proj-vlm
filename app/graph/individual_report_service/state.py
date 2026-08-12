@@ -1,4 +1,4 @@
-from typing import TypedDict, List, Optional,Set
+from typing import TypedDict, List, Optional
 
 class DefectInfo(TypedDict):
     imageType: str
@@ -6,12 +6,12 @@ class DefectInfo(TypedDict):
 
 class IndividualData(TypedDict):
     cellSerialNo: str
-    inspectionId: int
+    inspectionId: Optional[int]
     totalImages: int
-    cellSize: Set[float]
-    pointGroups:List[Set[float]]
-    ctVoidRatio: float
-    rgbDefectRate: float
+    cellSize: Optional[List[float]]
+    pointGroups: List[List[float]]
+    ctVoidRatio: Optional[float]
+    rgbDefectRate: Optional[float]
     defectInfo: List[DefectInfo]
 
 class ReportState(TypedDict):
