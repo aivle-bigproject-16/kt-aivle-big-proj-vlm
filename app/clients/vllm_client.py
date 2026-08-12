@@ -2,7 +2,7 @@ import asyncio
 import time
 import torch
 import os
-from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+from transformers import Qwen3VLForConditionalGeneration, AutoProcessor, BitsAndBytesConfig
 from qwen_vl_utils import process_vision_info
 from app.core.config import settings
 
@@ -14,11 +14,17 @@ hf_processor = None
 
 def load_model(model_id: str = settings.MODEL_ID) -> None:
     global hf_model, hf_processor
-    
+
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=torch.bfloat16 
+    )
+
     # 모델 로드
     hf_model = Qwen3VLForConditionalGeneration.from_pretrained(
         model_id,
-        torch_dtype=torch.bfloat16,
+        quantization_config=quantization_config,
         device_map="auto",
     )
     # 🚨 VLM(비전-언어 모델)은 Tokenizer 대신 Processor를 사용해야 합니다.
