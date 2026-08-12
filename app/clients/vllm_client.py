@@ -25,6 +25,8 @@ def load_model(model_id: str = MODEL_ID) -> None:
     hf_processor = AutoProcessor.from_pretrained(model_id)
     print(f"✅ {model_id} 로드 완료")
 
+def is_model_loaded() -> bool:
+    return hf_model is not None and hf_processor is not None
 
 async def invoke_qwen_hf(
     system_msg: str,
