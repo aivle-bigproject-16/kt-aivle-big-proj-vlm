@@ -20,8 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 5. 의존성 파일 복사 및 패키지 설치
 # 캐시를 활용하여 빌드 속도를 높이기 위해 requirements.txt만 먼저 복사합니다.
 COPY requirements.txt .
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # 6. 프로젝트 소스 코드 복사
 COPY . .
