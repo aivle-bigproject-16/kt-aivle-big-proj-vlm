@@ -22,17 +22,26 @@ ENV HF_HOME=/cache/huggingface
 
 # 의존성을 먼저 넣는다. 소스만 바뀌었을 때 설치 단계를 건너뛰기 위함이다.
 # GPU 이미지는 설치가 오래 걸려 이 순서가 특히 중요하다.
+# 베이스의 python 은 배포판이 관리하는 환경(PEP 668)이라 플래그 없이 pip 를 쓰면
+# externally-managed-environment 로 즉시 실패한다. ai-infer 의 GPU Dockerfile 도
+# 같은 이유로 --break-system-packages 를 쓰고 있으니 두 레포의 관용구를 맞춘다.
 COPY requirements.txt ./requirements.txt
-RUN python -m pip install --no-cache-dir --timeout 1000 -r requirements.txt
+RUN python -m pip install \
+      --break-system-packages \
+      --no-cache-dir \
+      --timeout 1000 \
+      -r requirements.txt
 
 COPY app ./app
 COPY download_model.py ./download_model.py
 
 # 루트로 돌리지 않는다. 캐시 경로는 이 사용자가 쓸 수 있어야 한다.
-RUN useradd --create-home --uid 1000 app \
- && mkdir -p /cache/huggingface \
- && chown -R app:app /app /cache
-USER app
+# 베이스 이미지에 이미 UID 1000(ubuntu)이 있어서 같은 UID 로 useradd 를 하면
+# "UID 1000 is not unique" 로 빌드가 깨진다. 새로 만들지 않고 그 UID 를 그대로 쓴다.
+# 이름 대신 숫자를 쓰는 것은 베이스가 사용자 이름을 바꿔도 깨지지 않게 하기 위함이다.
+RUN mkdir -p /cache/huggingface \
+ && chown -R 1000:1000 /app /cache
+USER 1000:1000
 
 EXPOSE 8001
 
