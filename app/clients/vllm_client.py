@@ -15,6 +15,7 @@ import torch
 from transformers import AutoModelForMultimodalLM, AutoProcessor
 
 from app.core.config import Settings, load_settings
+from app.core.inference_trace import record_generation
 
 hf_model = None
 hf_processor = None
@@ -125,12 +126,15 @@ async def invoke_qwen_hf(
     system_msg: str,
     prompt_text: str,
     image_urls: list[str] | None = None,
+    operation: str = "unclassified",
 ) -> str:
     if hf_model is None or hf_processor is None:
         raise RuntimeError(
             "model is not loaded; load_model() runs in the app lifespan"
         )
 
+    total_started_at = time.perf_counter()
+    preprocess_started_at = time.perf_counter()
     messages = _build_messages(system_msg, prompt_text, image_urls)
 
     inputs = hf_processor.apply_chat_template(
@@ -140,6 +144,11 @@ async def invoke_qwen_hf(
         return_dict=True,
         return_tensors="pt",
     ).to(hf_model.device)
+    preprocess_ms = max(
+        0,
+        round((time.perf_counter() - preprocess_started_at) * 1000),
+    )
+    input_tokens = int(inputs["input_ids"].shape[-1])
 
     def generate():
         return hf_model.generate(
@@ -150,13 +159,18 @@ async def invoke_qwen_hf(
         )
 
     print("생성 시작", flush=True)
-    started_at = time.perf_counter()
+    generate_started_at = time.perf_counter()
     generated_ids = await asyncio.to_thread(generate)
+    generate_ms = max(
+        0,
+        round((time.perf_counter() - generate_started_at) * 1000),
+    )
     print(
-        f"생성 완료 — {time.perf_counter() - started_at:.1f}초",
+        f"생성 완료 — {generate_ms / 1000:.1f}초",
         flush=True,
     )
 
+    decode_started_at = time.perf_counter()
     prompt_length = inputs["input_ids"].shape[1]
     generated_ids_trimmed = generated_ids[:, prompt_length:]
 
@@ -164,6 +178,26 @@ async def invoke_qwen_hf(
         generated_ids_trimmed,
         skip_special_tokens=True,
         clean_up_tokenization_spaces=False,
+    )
+    decode_ms = max(
+        0,
+        round((time.perf_counter() - decode_started_at) * 1000),
+    )
+    output_tokens = int(generated_ids_trimmed.shape[-1])
+    total_ms = max(
+        0,
+        round((time.perf_counter() - total_started_at) * 1000),
+    )
+    record_generation(
+        {
+            "operation": operation,
+            "preprocess_ms": preprocess_ms,
+            "generate_ms": generate_ms,
+            "decode_ms": decode_ms,
+            "total_ms": total_ms,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+        }
     )
 
     return output_text[0]

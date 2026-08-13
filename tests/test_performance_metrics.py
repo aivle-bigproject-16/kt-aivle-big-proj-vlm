@@ -1,6 +1,10 @@
 import asyncio
+import json
+
+from fastapi import Response
 
 from app.api.routes import reports
+from app.core.inference_trace import record_generation
 from app.core.performance_metrics import PerformanceMetrics
 from app.schemas.request import MOCK_DAILY_REPORT_REQUEST
 from app.schemas.response import ReportResponse
@@ -28,6 +32,14 @@ def test_daily_report_route_records_end_to_end_latency(monkeypatch):
     ticks = iter([100.0, 100.125])
 
     async def fake_generate_daily_report(req):
+        record_generation(
+            {
+                "operation": "daily_generate",
+                "generate_ms": 100,
+                "input_tokens": 50,
+                "output_tokens": 25,
+            }
+        )
         return ReportResponse(
             status="COMPLETED",
             title="title",
@@ -43,11 +55,28 @@ def test_daily_report_route_records_end_to_end_latency(monkeypatch):
         fake_generate_daily_report,
     )
 
-    response = asyncio.run(
-        reports.generate_daily_report(MOCK_DAILY_REPORT_REQUEST)
+    http_response = Response()
+    report = asyncio.run(
+        reports.generate_daily_report(
+            MOCK_DAILY_REPORT_REQUEST,
+            http_response,
+        )
     )
 
-    assert response.status == "COMPLETED"
+    assert report.status == "COMPLETED"
+    timing = json.loads(http_response.headers["X-VLM-Timings"])
+    assert timing == {
+        "total_ms": 125,
+        "retry_count": 0,
+        "calls": [
+            {
+                "operation": "daily_generate",
+                "generate_ms": 100,
+                "input_tokens": 50,
+                "output_tokens": 25,
+            }
+        ],
+    }
     daily = metrics.snapshot()["operations"]["daily_report"]
     assert daily["total_requests"] == 1
     assert daily["avg_ms"] == 125.0
