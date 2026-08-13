@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.clients.vllm_client import load_model
 from app.api.routes import reports, individual_reports, health
+from app.core.performance_metrics import PERFORMANCE_METRICS
 
 
 @asynccontextmanager
@@ -19,3 +20,8 @@ app = FastAPI(
 app.include_router(health.router)
 app.include_router(reports.router, prefix="/vlm")
 app.include_router(individual_reports.router, prefix="/vlm")
+
+
+@app.get("/metrics/performance", tags=["metrics"])
+async def performance_metrics() -> dict:
+    return PERFORMANCE_METRICS.snapshot()
