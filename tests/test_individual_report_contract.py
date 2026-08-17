@@ -4,6 +4,7 @@ from pydantic import ValidationError
 from app.graph.individual_report_service.nodes.individual_report_node import (
     build_individual_report_prompt,
 )
+from app.graph.individual_report_service.language import check_korean_only
 from app.schemas.request import IndividualReportRequest
 
 
@@ -67,3 +68,15 @@ def test_all_request_fields_reach_individual_report_prompt():
 def test_individual_report_request_rejects_unknown_contract_fields():
     with pytest.raises(ValidationError):
         IndividualReportRequest(**REQUEST_DATA, unexpectedContractField="must fail")
+
+
+def test_prompt_forbids_chinese_text_and_critic_rejects_leakage():
+    _, system_message, prompt = build_individual_report_prompt(REQUEST_DATA)
+
+    assert "중국어와 한자를 섞지 않고" in system_message
+    assert "중국어 또는 한자를 사용하지 않습니다" in prompt
+    assert check_korean_only("결함이 발견되지 않았습니다.") == []
+    assert check_korean_only("결함 패턴이没有出现.") == [{
+        "criterion": 6,
+        "description": "한국어 리포트에 중국어 한자가 포함됨: 出有没现",
+    }]

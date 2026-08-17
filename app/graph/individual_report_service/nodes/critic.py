@@ -1,6 +1,7 @@
 import json
 
 from app.clients.vllm_client import invoke_qwen_hf
+from app.graph.individual_report_service.language import check_korean_only
 from app.graph.individual_report_service.state import ReportState
 
 
@@ -72,6 +73,7 @@ async def critic_node(state: ReportState) -> dict:
     issues += _check_total_images(generated_report, data)
     issues += _check_final_label(generated_report, data)
     issues += _check_empty_defects(generated_report, data)
+    issues += check_korean_only(generated_report)
 
     # 모델 기반 검수 (기준 3: 날조 금지)
     issues += await _check_hallucination(generated_report, data)
