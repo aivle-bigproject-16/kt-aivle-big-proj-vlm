@@ -20,6 +20,24 @@ def _check_total_images(report: str, data: dict) -> list[dict]:
     return []
 
 
+def _check_final_label(report: str, data: dict) -> list[dict]:
+    value = data.get("finalLabel")
+    if value and value not in report:
+        return [{"criterion": 4, "description": f"finalLabel 누락: 원본={value}"}]
+    return []
+
+
+def _check_empty_defects(report: str, data: dict) -> list[dict]:
+    defect_count = sum(
+        len(item.get("defectType") or [])
+        for item in data.get("defectInfo", [])
+    )
+    defect_tokens = ("MICRO_DEFECT", "CRACK", "SPOT", "SWELLING")
+    if defect_count == 0 and any(token in report for token in defect_tokens):
+        return [{"criterion": 5, "description": "결함 0건인데 결함 유형이 생성됨"}]
+    return []
+
+
 async def _check_hallucination(report: str, data: dict) -> list[dict]:
     system_msg = "배터리 보고서 검수관입니다. 반드시 JSON 형식으로만 응답하세요."
     user_msg = f"""원본 데이터에 없는 결함 유형이 보고서에 등장하는지 확인하세요.
@@ -52,6 +70,8 @@ async def critic_node(state: ReportState) -> dict:
     issues: list[dict] = []
     issues += _check_cell_info(generated_report, data)
     issues += _check_total_images(generated_report, data)
+    issues += _check_final_label(generated_report, data)
+    issues += _check_empty_defects(generated_report, data)
 
     # 모델 기반 검수 (기준 3: 날조 금지)
     issues += await _check_hallucination(generated_report, data)

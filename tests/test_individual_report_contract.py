@@ -18,10 +18,15 @@ REQUEST_DATA = {
     "defectInfo": [
         {"imageType": "RGB-SENTINEL", "defectType": ["DEFECT-SENTINEL"]}
     ],
+    "sourceInspectionIds": [987654321, 987654322],
+    "finalLabel": "REJECT",
+    "inspectionStatus": "COMPLETED",
+    "failureType": None,
+    "failureReason": None,
 }
 
 
-def test_all_eight_request_fields_reach_individual_report_prompt():
+def test_all_request_fields_reach_individual_report_prompt():
     request = IndividualReportRequest(**REQUEST_DATA)
     retained = request.model_dump()
 
@@ -34,6 +39,11 @@ def test_all_eight_request_fields_reach_individual_report_prompt():
         "ctVoidRatio",
         "rgbDefectRate",
         "defectInfo",
+        "sourceInspectionIds",
+        "finalLabel",
+        "inspectionStatus",
+        "failureType",
+        "failureReason",
     }
 
     _, _, prompt = build_individual_report_prompt(retained)
@@ -46,6 +56,9 @@ def test_all_eight_request_fields_reach_individual_report_prompt():
         "ctVoidRatio": "0.123456",
         "rgbDefectRate": "87.654321",
         "defectInfo": "DEFECT-SENTINEL",
+        "sourceInspectionIds": "987654322",
+        "finalLabel": "REJECT",
+        "inspectionStatus": "COMPLETED",
     }
     for field, value in expected_prompt_values.items():
         assert value in prompt, f"{field} no longer reaches the report prompt"

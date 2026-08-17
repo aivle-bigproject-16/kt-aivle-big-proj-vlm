@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DefectCountSchema(BaseModel):
@@ -44,6 +44,11 @@ class IndividualReportRequest(BaseModel):
     ctVoidRatio: Optional[float]
     rgbDefectRate: Optional[float]
     defectInfo: List[DefectInfoSchema]
+    sourceInspectionIds: List[int] = Field(default_factory=list)
+    finalLabel: Optional[str] = None
+    inspectionStatus: Optional[str] = None
+    failureType: Optional[str] = None
+    failureReason: Optional[str] = None
 
 
 # ── Mockup ────────────────────────────────────────────────
@@ -60,6 +65,11 @@ MOCK_INDIVIDUAL_REPORT_REQUEST = IndividualReportRequest(
         DefectInfoSchema(imageType="RGB", defectType=["CRACK", "SPOT"]),
         DefectInfoSchema(imageType="RGB", defectType=["SPOT"]),
     ],
+    sourceInspectionIds=[84210, 84211],
+    finalLabel="REJECT",
+    inspectionStatus="COMPLETED",
+    failureType=None,
+    failureReason=None,
 )
 
 MOCK_DAILY_REPORT_REQUEST = DailyReportRequest(

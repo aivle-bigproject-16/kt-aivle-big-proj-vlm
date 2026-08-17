@@ -13,6 +13,11 @@ class IndividualData(TypedDict):
     ctVoidRatio: Optional[float]
     rgbDefectRate: Optional[float]
     defectInfo: List[DefectInfo]
+    sourceInspectionIds: List[int]
+    finalLabel: Optional[str]
+    inspectionStatus: Optional[str]
+    failureType: Optional[str]
+    failureReason: Optional[str]
 
 class ReportState(TypedDict):
     individual_data: Optional[IndividualData]
