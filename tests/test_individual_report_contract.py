@@ -4,7 +4,10 @@ from pydantic import ValidationError
 from app.graph.individual_report_service.nodes.individual_report_node import (
     build_individual_report_prompt,
 )
-from app.graph.individual_report_service.language import check_korean_only
+from app.graph.individual_report_service.report_quality import (
+    check_failure_reinspection,
+    check_korean_only,
+)
 from app.schemas.request import IndividualReportRequest
 
 
@@ -79,4 +82,13 @@ def test_prompt_forbids_chinese_text_and_critic_rejects_leakage():
     assert check_korean_only("결함 패턴이没有出现.") == [{
         "criterion": 6,
         "description": "한국어 리포트에 중국어 한자가 포함됨: 出有没现",
+    }]
+
+
+def test_fail_report_requires_explicit_reinspection_guidance():
+    assert check_failure_reinspection("추가 확인이 필요합니다.", {"finalLabel": "PASS"}) == []
+    assert check_failure_reinspection("재검사를 권고합니다.", {"finalLabel": "FAIL"}) == []
+    assert check_failure_reinspection("추가 확인이 필요합니다.", {"finalLabel": "FAIL"}) == [{
+        "criterion": 7,
+        "description": "FAIL 리포트에 재검사 권고가 누락됨",
     }]
