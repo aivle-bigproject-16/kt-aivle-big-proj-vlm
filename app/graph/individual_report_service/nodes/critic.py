@@ -56,7 +56,11 @@ async def _check_hallucination(report: str, data: dict) -> list[dict]:
 {{"verdict": "PASS" 또는 "FAIL", "issues": [{{"criterion": 3, "description": "원본값 vs 보고서값"}}]}}
 verdict가 PASS이면 issues는 빈 배열.
 """
-    response = await invoke_qwen_hf(system_msg=system_msg, prompt_text=user_msg)
+    response = await invoke_qwen_hf(
+        system_msg=system_msg,
+        prompt_text=user_msg,
+        operation="individual_critic",
+    )
     try:
         text = response.strip()
         result = json.loads(text[text.find("{"):text.rfind("}") + 1])

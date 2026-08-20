@@ -76,6 +76,7 @@ async def daily_report_node(state: ReportState) -> dict:
     response_text = await invoke_qwen_hf(
         system_msg=system_msg,
         prompt_text=user_msg,
+        operation="daily_generate",
     )
 
     return {
